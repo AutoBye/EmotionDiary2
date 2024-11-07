@@ -1,6 +1,5 @@
-package org.ppocharong.emotiondiary1.config;
+package org.ppocharong.emotiondiary2.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -14,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // 모든 경로에 대해 CORS 적용
                 .allowedOrigins("http://192.168.123.161:3000")  // 허용할 프론트엔드 도메인
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메서드
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTION")  // 허용할 HTTP 메서드
                 .allowCredentials(true);  // 쿠키 허용 설정
     }
 
@@ -22,6 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/stickers/**")
-                .addResourceLocations("file:///C:/Users/kiusw/Desktop/EmotionDiary-1/src/uploads/stickers/");
+                .addResourceLocations("file:///C:/Users/kiusw/Desktop/JAVA/KIU_TEAM_WEB/EmotionDiary2/uploads/stickes/");
     }
 }

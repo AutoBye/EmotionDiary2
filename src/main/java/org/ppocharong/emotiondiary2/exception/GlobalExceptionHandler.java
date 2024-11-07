@@ -1,4 +1,4 @@
-package org.ppocharong.emotiondiary1.exception;
+package org.ppocharong.emotiondiary2.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
