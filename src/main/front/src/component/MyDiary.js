@@ -65,7 +65,6 @@ function MyDiary() {
                             <p>공개 여부: {diary.visibility ? '공개' : '비공개'}</p>
                             <p>감정: {diary.emotions && diary.emotions.map(emotion => `${emotion.mainEmotion} (${emotion.subEmotion})`).join(', ')}</p>
                             <p>작성 날짜: {new Date(diary.createdAt).toLocaleDateString()}</p>
-                            <p>작성자: {diary.author || '익명'}</p>
                             <p>공감: {diary.likeCount}</p>
 
                             {/* 수정, 삭제 버튼 추가 */}

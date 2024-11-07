@@ -116,12 +116,14 @@ function Write() {
         axios.post('http://192.168.123.161:8080/diaries/write', {
             title,
             content,
-            isPublic,
+            visibility: isPublic,
             emotions: selectedEmotions,
             stickers: droppedStickers.map(({ stickerId, x, y }) => ({
-                stickerId,
+                sticker: { id: stickerId },
                 x: isNaN(parseFloat(x)) ? 0.0 : parseFloat(x),
-                y: isNaN(parseFloat(y)) ? 0.0 : parseFloat(y)
+                y: isNaN(parseFloat(y)) ? 0.0 : parseFloat(y),
+                scale: 1.0,
+                rotation: 0.0,
             }))
         }, {
             withCredentials: true

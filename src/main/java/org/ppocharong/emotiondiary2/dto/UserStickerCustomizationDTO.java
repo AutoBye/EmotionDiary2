@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.ppocharong.emotiondiary2.model.Diary;
-import org.ppocharong.emotiondiary2.model.Sticker;
 
 import java.time.Instant;
 
@@ -13,11 +12,10 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class UserStickerCustomizationDTO {
     private Long id;
     private Diary diary;
-    private Sticker sticker;
+    private StickerDTO sticker;
     private Double positionX;
     private Double positionY;
     private Double scale;

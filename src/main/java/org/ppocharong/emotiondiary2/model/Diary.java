@@ -6,8 +6,11 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,6 +44,7 @@ public class Diary {
 
     @ColumnDefault("now()")
     @Column(name = "updated_at")
+    @UpdateTimestamp
     private Instant updatedAt;
 
     @ColumnDefault("0")
@@ -52,4 +56,15 @@ public class Diary {
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Emotion> emotions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserStickerCustomization> userStickerCustomizations;  // UserStickerCustomization 매핑 추가
+
+
+    public void addEmotion(Emotion emotion) {
+        emotions.add(emotion);
+        emotion.setDiary(this);
+    }
 }
