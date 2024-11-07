@@ -1,0 +1,70 @@
+/// 작성자 20172522 이기보 10월 30일 오후 3:03
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import '../component/Style.css';
+
+function MyDiary() {
+    const [diaries, setDiaries] = useState([]); // 서버로부터 가져온 일기 데이터 저장
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        // 저장된 일기 데이터를 가져오기 위한 API 호출
+        axios.get('http://192.168.123.161:8080/diaries', { withCredentials: true })
+            .then((response) => {
+                setDiaries(response.data); // 가져온 데이터를 diaries 상태에 저장
+            })
+            .catch((error) => {
+                console.error('일기 데이터를 불러오는 데 실패했습니다:', error);
+                setError("일기 데이터를 불러오는 데 실패했습니다.");
+            });
+    }, []);
+
+    return (
+        <div className="my-diary-container">
+            <h2>내 일기</h2>
+            {error && <p className="error-message">{error}</p>}
+            <div className="diary-list">
+                {diaries.length > 0 ? (
+                    diaries.map((diary) => (
+                        <div key={diary.id} className="diary-item">
+                            <h3>{diary.title || '제목 없음'}</h3>
+                            <p className="diary-content">{diary.content}</p>
+                            <p>공개 여부: {diary.visibility ? '공개' : '비공개'}</p>
+                            <p>감정: {diary.emotions && diary.emotions.map(emotion => `${emotion.mainEmotion} (${emotion.subEmotion})`).join(', ')}</p>
+                            <p>작성 날짜: {new Date(diary.createdAt).toLocaleDateString()}</p>
+                            <p>작성자: {diary.author || '익명'}</p>
+                            {/* 수정, 삭제 버튼 추가 */}
+                            <div className="diary-actions">
+                                <button onClick={() => handleEdit(diary.id)}>수정</button>
+                                <button onClick={() => handleDelete(diary.id)}>삭제</button>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>저장된 일기가 없습니다.</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// 수정 및 삭제 핸들러 함수 추가
+function handleEdit(diaryId) {
+    // 수정 로직 구현 (예: 다이어리 수정 페이지로 이동)
+    console.log(`Edit diary with id: ${diaryId}`);
+}
+
+function handleDelete(diaryId) {
+    axios.delete(`http://192.168.123.161:8080/diaries/${diaryId}`, { withCredentials: true })
+        .then(() => {
+            alert('일기가 성공적으로 삭제되었습니다.');
+            setDiaries(prevDiaries => prevDiaries.filter(diary => diary.id !== diaryId));
+        })
+        .catch((error) => {
+            console.error('일기 삭제 중 오류 발생:', error);
+            alert('일기 삭제에 실패했습니다.');
+        });
+}
+
+export default MyDiary;

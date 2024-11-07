@@ -1,0 +1,125 @@
+/* LeeSeoyun 폰트 설정 */
+@font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 헤더 스타일 */
+.header {
+    padding: 5px 0 20px 0; /* 위아래 여백: 위 10px, 아래 20px 추가 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+    margin-top: 12px; /* 메뉴 위에 12px 여백 추가 */
+}
+
+/* 네비게이션 스타일 */
+.nav {
+    display: flex; /* 네비게이션 아이템을 가로로 배치 */
+    align-items: center; /* 아이템을 세로 방향으로 가운데 정렬 */
+    justify-content: space-between; /* 네비게이션 아이템을 양쪽 끝으로 배치 */
+    padding: 0 20px; /* 좌우 여백을 20px씩 추가 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 홈 버튼을 왼쪽에 고정 */
+.nav-left {
+    margin-right: auto; /* 홈 버튼을 왼쪽에 고정하고, 나머지 링크와 간격 유지 */
+}
+
+/* 중앙 정렬된 링크들 */
+.nav-center {
+    display: flex; /* 중앙 링크들을 가로로 배치 */
+    gap: 300px; /* 링크들 사이 간격을 300px로 설정 */
+}
+
+/* 로그인/유저 정보는 오른쪽에 고정 */
+.nav-right {
+    margin-left: auto; /* 오른쪽 정렬로 위치 고정 */
+    display: flex; /* 로그인과 유저 정보 아이템을 가로로 배치 */
+    align-items: center; /* 아이템을 세로 방향으로 가운데 정렬 */
+    gap: 10px; /* 아이템 간의 간격을 10px로 설정 */
+}
+
+/* 링크 스타일 */
+.link {
+    color: black; /* 링크 텍스트 색상을 검정으로 설정 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+    font-size: 19px; /* 텍스트 크기를 19px로 설정 */
+    position: relative; /* 슬라이딩 밑줄 위치를 위한 기준 설정 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 로그인 링크 스타일 */
+.small-link {
+    font-size: 15px; /* 로그인 링크만 글씨 크기를 줄임 */
+}
+
+/* 링크 밑줄 슬라이딩 효과 */
+.nav-center .link::after {
+    content: ""; /* 가상 요소로 밑줄 역할 생성 */
+    position: absolute; /* 부모 요소를 기준으로 위치 고정 */
+    left: 0; /* 밑줄의 시작 위치를 왼쪽으로 설정 */
+    bottom: -8px; /* 밑줄을 글자 바로 아래로 이동 */
+    width: 0; /* 초기 너비를 0으로 설정해 숨김 상태로 시작 */
+    height: 2px; /* 밑줄 두께를 2px로 설정 */
+    background-color: #ed7f24; /* 밑줄 색상을 설정 */
+    transition: width 0.4s ease; /* 너비 변경 시 1초 동안 부드럽게 확장 */
+}
+
+.link:hover::after {
+    width: 100%; /* 마우스 오버 시 밑줄 너비를 100%로 확장하여 나타남 */
+}
+
+/* 유저 정보 스타일 */
+.user-info {
+    display: flex; /* 유저 정보 아이템을 가로로 배치 */
+    align-items: center; /* 세로 방향으로 가운데 정렬 */
+    gap: 10px; /* 아이템 간의 간격을 10px로 설정 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 사용자 이름 스타일 */
+.username {
+    color: black; /* 사용자 이름 텍스트 색상을 검정으로 설정 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout-button {
+    padding: 5px 10px; /* 버튼에 상하 5px, 좌우 10px의 여백 추가 */
+    color: black; /* 버튼 텍스트 색상을 검정으로 설정 */
+    border: none; /* 기본 테두리를 제거 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 작성 폼과 스티커 선택을 나란히 배치하는 부모 컨테이너 */
+.write-wrapper {
+    display: flex; /* 작성 폼과 스티커 선택 컨테이너를 가로로 배치 */
+    gap: 20px; /* 두 컨테이너 사이의 간격을 20px로 설정 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 스티커 선택 컨테이너 스타일 */
+.sticker-selection {
+    flex: 1; /* 가능한 넓게 차지하게 설정 */
+    padding: 20px; /* 내부 여백을 20px로 설정 */
+    border: 1px solid #ddd; /* 연한 회색 테두리 추가 */
+    border-radius: 8px; /* 모서리를 둥글게 설정 */
+    background-color: #f9f9f9; /* 배경색을 연한 회색으로 설정 */
+    max-width: 300px; /* 최대 너비를 300px로 제한 */
+    margin-top: 10px; /* 상단 여백을 10px로 설정 */
+    margin-right: 30px; /* 오른쪽 여백을 30px로 설정 */
+    font-family: 'SUIT-Regular', Arial, sans-serif;
+}
+
+/* 헤더 밑줄 스타일 */
+.divider {
+    width: 100%; /* 화면 전체 너비로 설정 */
+    height: 2px; /* 선의 두께 설정 */
+    background-color: #ddd; /* 선의 색상을 연한 회색으로 설정 */
+    margin-top: 14px; /* 위쪽에 14px 여백 추가 */
+}
+
