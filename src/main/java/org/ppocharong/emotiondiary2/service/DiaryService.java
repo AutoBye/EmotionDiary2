@@ -90,8 +90,14 @@ public class DiaryService {
             diary.setLikeCount(0);
 
             Theme theme = diaryDTO.getTheme();
+            if (theme == null) {
+                theme = new Theme();
+                theme.setThemeName("default");
+                theme.setDescription("기본 테마");
+            }
             System.out.println(theme.getThemeName());
             diary.setTheme(theme);
+
 
             // 일기 기본정보 저장중
 

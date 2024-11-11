@@ -26,5 +26,5 @@ public class Theme {
     @ColumnDefault("now()")
     @Column(name = "created_at")
     private Instant createdAt;
-
+    
 }

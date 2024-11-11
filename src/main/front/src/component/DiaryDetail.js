@@ -64,6 +64,10 @@ function DiaryDetail() {
             .catch((error) => {
                 console.error('일기 상세 데이터를 불러오는 데 실패했습니다:', error);
                 setError("일기 상세 데이터를 불러오는 데 실패했습니다.");
+                const errorMessage = getErrorMessage(error);
+                console.error("일기 상세 데이터를 불러오는 데 실패했습니다:", errorMessage);
+                setError(errorMessage);
+                setModalMessage(errorMessage);
             });
     }, [id]);
 
@@ -118,9 +122,17 @@ function DiaryDetail() {
         }
     };
 
+    // 오류 메시지 추출 함수
+    const getErrorMessage = (error) => {
+        if (error.response && error.response.data) {
+            return error.response.data;
+        }
+        return "일기 데이터를 불러오는 중 오류가 발생했습니다.";
+    };
+
 
     if (error) {
-        return <p className="error-message">{error}</p>;
+        return <p className="error-message">{modalMessage}</p>;
     }
 
     if (!diary) {

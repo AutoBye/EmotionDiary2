@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 //스티커 삽입 api 링크들어가면 바로 작동.
+
 // http://localhost:8080/api/stickers/insert-from-folder
 @RestController
 @RequestMapping("/api/stickers")

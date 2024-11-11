@@ -8,12 +8,18 @@ function Write() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [isPublic, setIsPublic] = useState(false);
+
     const [selectedMainEmotion, setSelectedMainEmotion] = useState('');
     const [selectedEmotions, setSelectedEmotions] = useState([]);
+
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+
+    const defaultTheme = { id: 1, themeName: 'default', description: '기본 테마' };
     const [themes, setThemes] = useState([]); // 테마 목록 상태 추가
-    const [selectedTheme, setSelectedTheme] = useState('default'); // 선택된 테마
+    const [selectedTheme, setSelectedTheme] = useState(defaultTheme);
+
+
     const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
 
     const navigate = useNavigate();
@@ -46,6 +52,9 @@ function Write() {
 
     const closeModal = () => setModalMessage(''); // 모달 닫기
 
+
+
+
     const handleStickerDragStart = (sticker, e) => {
         e.dataTransfer.setData('stickerId', sticker.stickerId);
     };
@@ -74,8 +83,17 @@ function Write() {
         e.preventDefault();
     };
 
+    const handleStickerDelete = (index) => {
+        setDroppedStickers((prev) => prev.filter((_, i) => i !== index));
+    };
+
+
+
+
+
+
     const handleThemeSelect = (theme) => {
-        setSelectedTheme(theme);
+        setSelectedTheme(theme || defaultTheme); // 선택된 테마가 없으면 기본 테마로 설정
     };
 
     const themeStyles = {
@@ -91,15 +109,18 @@ function Write() {
     };
 
 
+
+
+
     const requiredEmotions = ['기쁨란'];
 
     const mainEmotions = [
-        { name: '기쁨란',image: '/images/1.png', subEmotions: ["감사하는", "기쁨", "느긋", "만족스러운", "신뢰하는", "신이 난", "안도", "자신하는", "편안한", "흥분"] },
-        { name: '당황란',image: '/images/2.png' ,subEmotions: ["고립된", "남의 시선을 의식하는", "당황", "부끄러운", "열등감", "외로운", "죄책감의", "한심한", "혐오스러운", "혼란스러운"] },
-        { name: '분노란',image: '/images/3.png', subEmotions: ["구역질 나는", "노여워하는", "방어적인", "분노", "성가신", "악의적인", "안달하는", "좌절한", "짜증내는", "툴툴대는"] },
-        { name: '불안란',image: '/images/4.png' ,subEmotions: ["걱정스러운", "당혹스러운", "두려운", "불안", "스트레스 받는", "조심스러운", "초조한", "취약한", "혼란스러운", "회의적인"] },
-        { name: '슬픔란', image: '/images/5.png',subEmotions: ["낙담한", "눈물이 나는", "마비된", "비통한", "슬픔", "실망한", "염세적인", "우울한", "환멸을 느끼는", "후회되는"] },
-        { name: '상처란', image: '/images/6.png',subEmotions: ["불우한", "고립된", "괴로워하는", "배신당한", "버려진", "상처", "억울한", "질투하는", "충격 받은", "희생된"] }
+        { name: '기쁨란',image: '/images/1.png', className: 'joy',subEmotions: ["감사하는", "기쁨", "느긋", "만족스러운", "신뢰하는", "신이 난", "안도", "자신하는", "편안한", "흥분"] },
+        { name: '당황란',image: '/images/2.png' , className: 'embarrassment',subEmotions: ["고립된", "남의 시선을 의식하는", "당황", "부끄러운", "열등감", "외로운", "죄책감의", "한심한", "혐오스러운", "혼란스러운"] },
+        { name: '분노란',image: '/images/3.png', className: 'anger', subEmotions: ["구역질 나는", "노여워하는", "방어적인", "분노", "성가신", "악의적인", "안달하는", "좌절한", "짜증내는", "툴툴대는"] },
+        { name: '불안란',image: '/images/4.png', className: 'anxiety' ,subEmotions: ["걱정스러운", "당혹스러운", "두려운", "불안", "스트레스 받는", "조심스러운", "초조한", "취약한", "혼란스러운", "회의적인"] },
+        { name: '슬픔란', image: '/images/5.png', className: 'sadness',subEmotions: ["낙담한", "눈물이 나는", "마비된", "비통한", "슬픔", "실망한", "염세적인", "우울한", "환멸을 느끼는", "후회되는"] },
+        { name: '상처란', image: '/images/6.png',className: 'wounded',subEmotions: ["불우한", "고립된", "괴로워하는", "배신당한", "버려진", "상처", "억울한", "질투하는", "충격 받은", "희생된"] }
     ];
 
     const handleMainEmotionClick = (emotion) => {
@@ -121,6 +142,15 @@ function Write() {
     const isRequiredEmotionSelected = () => {
         return selectedEmotions.some(({mainEmotion}) => requiredEmotions.includes(mainEmotion));
     };
+
+    const filteredSubEmotions = selectedMainEmotion
+        ? mainEmotions.find(emotion => emotion.name === selectedMainEmotion).subEmotions
+        : [];
+
+
+
+
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -145,7 +175,7 @@ function Write() {
             content,
             visibility: isPublic,
             emotions: selectedEmotions,
-            theme: selectedTheme, // 선택한 테마 추가
+            theme: selectedTheme || 'default', // 선택된 테마가 없으면 'default'로 설정
             stickers: droppedStickers.map(({stickerId, x, y}) => ({
                 sticker: {id: stickerId},
                 positionX: isNaN(parseFloat(x)) ? 0.0 : parseFloat(x),
@@ -170,9 +200,7 @@ function Write() {
             });
     };
 
-    const filteredSubEmotions = selectedMainEmotion
-        ? mainEmotions.find(emotion => emotion.name === selectedMainEmotion).subEmotions
-        : [];
+
 
     return (
         <div className="write-wrapper">
@@ -273,6 +301,10 @@ function Write() {
                         alt={sticker.stickerName}
                         className="dropped-sticker"
                         style={{position: 'absolute', left: sticker.x, top: sticker.y, width: '50px', height: '50px'}}
+                        onContextMenu={(e) => {
+                            e.preventDefault();
+                            handleStickerDelete(index); // 우클릭 시 삭제
+                        }}
                     />
                 ))}
 
