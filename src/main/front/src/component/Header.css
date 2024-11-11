@@ -6,12 +6,33 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ChosunGu';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* 헤더 스타일 */
 .header {
     padding: 5px 0 20px 0; /* 위아래 여백: 위 10px, 아래 20px 추가 */
     text-align: center; /* 텍스트를 가운데 정렬 */
     font-family: 'SUIT-Regular', Arial, sans-serif;
-    margin-top: 12px; /* 메뉴 위에 12px 여백 추가 */
+    margin-top: 8px; /* 메뉴 위에 12px 여백 추가 */
 }
 
 /* 네비게이션 스타일 */
@@ -23,9 +44,9 @@
     font-family: 'SUIT-Regular', Arial, sans-serif;
 }
 
-/* 홈 버튼을 왼쪽에 고정 */
 .nav-left {
     margin-right: auto; /* 홈 버튼을 왼쪽에 고정하고, 나머지 링크와 간격 유지 */
+    margin-left: 10px; /* 원하는 만큼 오른쪽으로 이동 */
 }
 
 /* 중앙 정렬된 링크들 */
@@ -46,9 +67,10 @@
 .link {
     color: black; /* 링크 텍스트 색상을 검정으로 설정 */
     text-decoration: none; /* 기본 밑줄 제거 */
-    font-size: 19px; /* 텍스트 크기를 19px로 설정 */
+    font-size: 21px; /* 텍스트 크기를 19px로 설정 */
+    font-weight: 600; /* 텍스트 굵기 설정 */
     position: relative; /* 슬라이딩 밑줄 위치를 위한 기준 설정 */
-    font-family: 'SUIT-Regular', Arial, sans-serif;
+    font-family: 'ChosunGu', Arial, sans-serif;
 }
 
 /* 로그인 링크 스타일 */
@@ -61,10 +83,10 @@
     content: ""; /* 가상 요소로 밑줄 역할 생성 */
     position: absolute; /* 부모 요소를 기준으로 위치 고정 */
     left: 0; /* 밑줄의 시작 위치를 왼쪽으로 설정 */
-    bottom: -8px; /* 밑줄을 글자 바로 아래로 이동 */
+    bottom: -19px; /* 밑줄을 글자 바로 아래로 이동 */
     width: 0; /* 초기 너비를 0으로 설정해 숨김 상태로 시작 */
     height: 2px; /* 밑줄 두께를 2px로 설정 */
-    background-color: #ed7f24; /* 밑줄 색상을 설정 */
+    background-color: #ea7824; /* 밑줄 색상을 설정 */
     transition: width 0.4s ease; /* 너비 변경 시 1초 동안 부드럽게 확장 */
 }
 
@@ -119,7 +141,7 @@
 .divider {
     width: 100%; /* 화면 전체 너비로 설정 */
     height: 2px; /* 선의 두께 설정 */
-    background-color: #ddd; /* 선의 색상을 연한 회색으로 설정 */
-    margin-top: 14px; /* 위쪽에 14px 여백 추가 */
+    background-color: rgba(234, 120, 36, 0.33); /* 선의 색상을 연한 회색으로 설정 */
+    margin-top: 8px; /* 위쪽에 14px 여백 추가 */
 }
 

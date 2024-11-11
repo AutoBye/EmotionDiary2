@@ -1,25 +1,26 @@
+
 @font-face {
-    font-family: 'GmarketSansMedium';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'SUIT-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-family: 'ChosunGu';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
-/* 전체 글씨체를 KyoboHand로 설정 */
+@font-face {
+    font-family: 'HakgyoansimWoojuR';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'EF_hyunydororong';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-01@1.0/EF_hyunydororong.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
-    font-family: 'KyoboHand', Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ffffff;
@@ -28,7 +29,6 @@ body {
 /* Main container */
 main {
     padding: 20px;
-    display: flex;
     flex-direction: column;
     align-items: center;
     color: #333;
@@ -37,7 +37,6 @@ main {
 /* Section style */
 section {
     width: 100%;
-    max-width: 800px;
     margin: 500px 0; /* 섹션 간 간격을 넓히기 위해 상하 여백을 100px로 설정 */
     padding: 20px;
     text-align: center;
@@ -54,24 +53,31 @@ section {
     padding-top: 20px; /* 살짝 더 내리는 효과 */
 }
 
+.image-container {
+    margin-top: -60px; /* 이 값을 조정 */
+}
+.text-container {
+    margin-top: -100px; /* 이 값을 조정 */
+}
+
 /* 큰소개글 */
 h1 {
     text-align: center;
     color: #000000;
-    font-family: 'GmarketSansMedium', Arial, sans-serif;
+    font-family: 'ChosunGu', Arial, sans-serif;
     font-size: 50px;
-    font-weight: 300;
-    margin-top: 1px;
+    font-weight: 600;
+    margin-top: 10px;
 }
 
 /* 작은 소개글 */
 .highlight-text {
     color: #000000;
-    font-family: 'Pretendard-Regular', Arial, sans-serif;
-    margin-top: -20px;
+    font-family: 'ChosunGu', Arial, sans-serif;
+    margin-top: -10px;
     font-weight: 300;
     line-height: 1.6;
-    font-size: 18px;
+    font-size: 23px;
     margin-bottom: 100px;
 }
 
@@ -104,7 +110,7 @@ h2 {
 
 .explain-text {
     color: #6e6c6c;
-    font-family: 'Pretendard-Regular', Arial, sans-serif;
+    font-family: 'ChosunGu', Arial, sans-serif;
     margin-top: 30px;
     font-weight: 300;
     line-height: 1.6;
@@ -133,18 +139,20 @@ h2 {
 
 button {
     padding: 10px 20px;
-    background-color: #ed7f24;
+    background-color: #ea7824;
     border: none;
     border-radius: 4px;
     color: white;
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: 'KyoboHand', Arial, sans-serif;
+    font-family: 'ChosunGu', Arial, sans-serif;
 }
 
+
+
 button:hover {
-    background-color: #ed7f24;
+    background-color: #ea7824;
 }
 
 ul {
@@ -156,7 +164,7 @@ ul {
 li {
     margin: 8px 0;
     color: #555;
-    font-family: 'KyoboHand', Arial, sans-serif;
+    font-family: 'ChosunGu', Arial, sans-serif;
 }
 
 .flex-layout {
@@ -225,12 +233,21 @@ li {
 }
 
 
+.sticky-wrapper {
+    position: sticky; /* 스크롤 시 고정 */
+    top: 0; /* 화면 상단에 고정 */
+    z-index: 1000; /* 다른 요소 위에 표시되도록 높은 z-index 설정 */
+    background-color: #ffffff; /* 배경색 추가 */
+    padding: 0; /* 패딩 제거 */
+    margin: 0; /* 마진 제거 */
+}
+
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 100px; /* 버튼 사이 간격을 넓힘 */
+    gap: 100px; /* 버튼 사이 간격 */
+    padding: 0; /* 패딩 제거 */
     margin-top: -35px;
-    margin-bottom: 4px;
 }
 
 .button-container button {
@@ -239,17 +256,31 @@ li {
     color: #938e8e; /* 버튼 텍스트 색상 */
     font-size: 15px;
     cursor: pointer;
-    font-family: 'Pretendard-Regular', Arial, sans-serif;
+    font-family:'ChosunGu', Arial, sans-serif;
+    font-weight: 600;
     position: relative; /* ::after 위치를 위해 상대 위치 설정 */
     transition: color 0.3s ease;
 }
+
+.button-container button:hover {
+    color: #000; /* 호버 시 텍스트 색상 변경 */
+}
+
+.small-line {
+    width: 100%; /* 화면 전체 너비 */
+    height: 2px; /* 선의 두께 */
+    background-color: rgba(154, 149, 149, 0.3); /* 연한 회색 */
+    margin-top: 4px;
+    padding: 0; /* 패딩 제거 */
+}
+
 
 .button-container button::after {
     content: ''; /* 가상 요소 생성 */
     display: block;
     width: 100%;
     height: 2px; /* 밑줄 두께 설정 */
-    background-color: #ed7f24; /* 밑줄 색상 */
+    background-color: #ea7824; /* 밑줄 색상 */
     position: absolute;
     bottom: -6px; /* 글자와 밑줄 사이 간격 조정 */
     left: 0;
@@ -258,7 +289,7 @@ li {
 }
 
 .button-container button:hover {
-    color: #ed7f24; /* 버튼에 호버 효과로 텍스트 색상 변경 */
+    color: #ea7824; /* 버튼에 호버 효과로 텍스트 색상 변경 */
 }
 
 .button-container button:hover::after {
@@ -267,9 +298,47 @@ li {
 
 
 
-/* 작은 밑줄 스타일 */
-.small-line {
-    width: 120%; /* 화면 전체 너비로 설정 */
-    height: 2px; /* 선의 두께 설정 */
-    background-color: #ddd; /* 선의 색상을 연한 회색으로 설정 */
+
+.text-container {
+    display: flex;
+    flex-direction: column; /* 텍스트를 세로로 배열 */
+    align-items: center; /* 텍스트를 가운데 정렬 */
+    margin-top: -100px;
 }
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* 부모 컨테이너가 전체 너비를 차지하도록 설정 */
+    margin-top: -60px;
+}
+
+.banner1-image, .banner2-image {
+    max-width: 100%; /* 이미지 크기를 조정하여 적절하게 배치 */
+    height: auto; /* 이미지 비율 유지 */
+}
+
+.highlight2-text {
+    flex-direction: column; /* 자식 요소들이 수직으로 배치되도록 설정 */
+    text-align: center;
+    margin-top: 250px;
+    font-family: 'HakgyoansimWoojuR', Arial, sans-serif;
+    font-size: 50px;
+    font-weight: 600;
+    color: #000000;
+}
+.highlight2-text span {
+    display: block; /* 각 줄을 세로로 배열 */
+    margin-bottom: 20px; /* 줄 간격 조정 (필요 시 조정) */
+}
+
+.highlight3-text {
+    flex-direction: column; /* 자식 요소들이 수직으로 배치되도록 설정 */
+    text-align: center;
+    margin-top: 130px;
+    font-family: 'ChosunGu', Arial, sans-serif;
+    font-size: 20px;
+    color: #000000;
+}
+

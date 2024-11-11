@@ -16,11 +16,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,16 +32,19 @@ public class DiaryService {
     private final UserStickerCustomizationRepository stickerCustomizationRepository;
     private final DiaryLikeRepository diaryLikeRepository;
     private final MoodAnalysisRepository moodAnalysisRepository;
+    private final ThemeRepository themeRepository;
 
     public DiaryService(DiaryRepository diaryRepository, UserRepository userRepository,
                         StickerRepository stickerRepository, UserStickerCustomizationRepository stickerCustomizationRepository,
-                        DiaryLikeRepository diaryLikeRepository, MoodAnalysisRepository moodAnalysisRepository) {
+                        DiaryLikeRepository diaryLikeRepository, MoodAnalysisRepository moodAnalysisRepository,
+                        ThemeRepository themeRepository) {
         this.diaryRepository = diaryRepository;
         this.userRepository = userRepository;
         this.stickerRepository = stickerRepository;
         this.stickerCustomizationRepository = stickerCustomizationRepository;
         this.diaryLikeRepository = diaryLikeRepository;
         this.moodAnalysisRepository = moodAnalysisRepository;
+        this.themeRepository = themeRepository;
     }
 
     /** 세션에서 유저 네임 가져오기 */
@@ -136,11 +139,21 @@ public class DiaryService {
             diary.setContent(diaryDTO.getContent());
             diary.setMoodScore(diaryDTO.getMoodScore());
             diary.setVisibility(diaryDTO.getVisibility());
-            diary.setCreatedAt(Instant.from(LocalDateTime.now()));
-            diary.setUpdatedAt(Instant.from(LocalDateTime.now()));
+            diary.setCreatedAt(Instant.now());
+            diary.setUpdatedAt(Instant.now());
             diary.setLikeCount(0);
             //TODO - 테마 설정 저장하자.
-            diary.setTheme(null);
+            // 테마 이름으로 ID 찾기 및 설정
+
+            Theme theme = diaryDTO.getTheme();
+            System.out.println(theme.getThemeName());
+            diary.setTheme(theme);
+
+//            if (themeName != null) {
+//                Theme theme = themeRepository.findByThemeName(themeName)
+//                        .orElseThrow(() -> new RuntimeException("해당 이름의 테마를 찾을 수 없습니다: " + themeName));
+//                diary.setTheme(theme);  // 테마 ID 설정
+//            }
             // 일기 기본정보 저장중
 
 
@@ -165,7 +178,11 @@ public class DiaryService {
                 for (UserStickerCustomizationDTO stickerData : stickers) {
                     Long stickerId = stickerData.getSticker().getId();
                     Sticker sticker = stickerRepository.findById(stickerId)
-                            .orElseThrow(() -> new RuntimeException("스티커를 찾을 수 없습니다."));
+                            .orElseThrow(() -> {
+                                // 스티커 ID 로그 추가
+                                System.err.println("스티커 ID: " + stickerId + "를 찾을 수 없습니다.");
+                                return new RuntimeException("스티커를 찾을 수 없습니다. ID: " + stickerId);
+                            });
 
                     UserStickerCustomization customization = new UserStickerCustomization();
                     customization.setDiary(diary);
@@ -264,7 +281,7 @@ public class DiaryService {
     }
 
 
-    /** 일기 보기 서비스 계층*/
+    /** 일기 보기 서비스 계층 */
     @Transactional(readOnly = true)
     public ResponseEntity<DiaryDTO> getDiaryById(Long id, HttpSession session) {
 
@@ -274,69 +291,30 @@ public class DiaryService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        // 사용자 조회 실패 시 예외 처리
+        //사용자 조회 실패 시 예외 처리
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
+
+        // 사용자 조회 시 사용자 정보가 없으면 null로 설정
+        //User user = userRepository.findByUsername(username).orElse(null);
 
         // 일기 조회 실패 시 예외 처리
         Diary diary = diaryRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일기를 찾을 수 없습니다."));
 
-
-        if (Boolean.TRUE.equals(!diary.getVisibility()) || !diary.getUser().getId().equals(user.getId())) {
+        // 일기가 비공개이며 작성자가 현재 사용자가 아닐 경우 접근 금지
+        if (!diary.getVisibility() && !diary.getUser().getId().equals(Objects.requireNonNull(user).getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
         // 스티커 정보 변환
-        List<UserStickerCustomizationDTO> stickers = diary.getUserStickerCustomizations().stream()
-                .map(stickerCustomization -> new UserStickerCustomizationDTO(
-                        stickerCustomization.getId(),
-                        stickerCustomization.getDiary(),
-                        new StickerDTO(
-                                stickerCustomization.getSticker().getId(),
-                                stickerCustomization.getSticker().getStickerName(),
-                                stickerCustomization.getSticker().getImageUrl(),
-                                stickerCustomization.getSticker().getDescription(),
-                                stickerCustomization.getSticker().getCreatedAt()),
-                        stickerCustomization.getPositionX(),
-                        stickerCustomization.getPositionY(),
-                        stickerCustomization.getScale(),
-                        stickerCustomization.getRotation(),
-                        stickerCustomization.getCreatedAt()
-                )).collect(Collectors.toList());
-
+        List<UserStickerCustomizationDTO> stickers = convertStickerCustomizationsToDTO(diary);
 
         // 감정 분석 데이터 조회 및 변환
-        List<MoodAnalysis> moodAnalyses = moodAnalysisRepository.findByDiaryId(diary.getId());
-
-        // TODO - 코드 너무 복잡함. 나중에 수정해서 간단하게 바꾸자.
-        Map<String, Map<String, Object>> emotionCountMap = moodAnalyses.stream()
-                .collect(Collectors.groupingBy(
-                        MoodAnalysis::getMoodCategory,
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                moodList -> {
-                                    List<String> subCategories = moodList.stream()
-                                            .map(MoodAnalysis::getMoodSubcategory)
-                                            .collect(Collectors.toList());
-
-                                    Map<String, Object> result = new HashMap<>();
-                                    result.put("count", (long) moodList.size());
-                                    result.put("subCategories", subCategories);
-                                    return result;
-                                }
-                        )
-                ));
+        Map<String, Map<String, Object>> emotionCountMap = groupMoodAnalysis(moodAnalysisRepository.findByDiaryId(diary.getId()));
 
         // 감정 정보 변환
-        List<EmotionDTO> emotions = diary.getEmotions().stream()
-                .map(emotion -> new EmotionDTO(
-                        emotion.getId(),
-                        diary.getId(), // Diary 객체 대신 ID만 전달
-                        emotion.getMainEmotion(),
-                        emotion.getSubEmotion(),
-                        emotion.getCreatedAt()
-                )).collect(Collectors.toList());
+        List<EmotionDTO> emotions = convertEmotionsToDTO(diary);
 
         DiaryDTO diaryDetails = new DiaryDTO(
                 diary.getId(),
@@ -353,6 +331,26 @@ public class DiaryService {
                 emotionCountMap,
                 diary.getUser().getUsername()
         );
+
+        // DiaryDTO에 포함된 스티커 정보 출력
+        //System.out.println("DiaryDTO with Stickers:");
+        if (diaryDetails.getStickers() != null) {
+            for (UserStickerCustomizationDTO sticker : diaryDetails.getStickers()) {
+//                System.out.println("Sticker ID: " + sticker.getId());
+//                System.out.println("Sticker Name: " + sticker.getSticker().getStickerName());
+//                System.out.println("Sticker Image URL: " + sticker.getSticker().getImageUrl());
+//                System.out.println("Sticker Description: " + sticker.getSticker().getDescription());
+//                System.out.println("Sticker PositionX: " + sticker.getPositionX());
+//                System.out.println("Sticker PositionY: " + sticker.getPositionY());
+//                System.out.println("Sticker Scale: " + sticker.getScale());
+//                System.out.println("Sticker Rotation: " + sticker.getRotation());
+//                System.out.println("Sticker Created At: " + sticker.getCreatedAt());
+//                System.out.println("---------");
+            }
+        } else {
+            System.out.println("No stickers available in DiaryDTO.");
+        }
+
 
         return ResponseEntity.ok(diaryDetails);
     }
@@ -400,7 +398,7 @@ public class DiaryService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("자신의 일기에는 공감을 할 수 없습니다.");
         }
 
-        if (diaryLikeRepository.existsByUserAndDiary(user, diary)) {
+        if (diaryLikeRepository.existsByUserIdAndDiary(user.getId(), diary)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이미 공감한 일기입니다.");
         }
 
@@ -416,6 +414,58 @@ public class DiaryService {
         diaryLikeRepository.save(diaryLike);
 
         return ResponseEntity.ok(String.valueOf(diary.getLikeCount()));
+    }
+
+
+    private List<UserStickerCustomizationDTO> convertStickerCustomizationsToDTO(Diary diary) {
+        return diary.getUserStickerCustomizations().stream()
+                .map(stickerCustomization -> new UserStickerCustomizationDTO(
+                        stickerCustomization.getId(),
+                        stickerCustomization.getDiary(),
+                        new StickerDTO(
+                                stickerCustomization.getSticker().getStickerId(),
+                                stickerCustomization.getSticker().getStickerName(),
+                                stickerCustomization.getSticker().getImageUrl(),
+                                stickerCustomization.getSticker().getDescription(),
+                                stickerCustomization.getSticker().getCreatedAt()),
+                        stickerCustomization.getPositionX(),
+                        stickerCustomization.getPositionY(),
+                        stickerCustomization.getScale(),
+                        stickerCustomization.getRotation(),
+                        stickerCustomization.getCreatedAt()
+                )).collect(Collectors.toList());
+
+    }
+
+    private Map<String, Map<String, Object>> groupMoodAnalysis(List<MoodAnalysis> moodAnalyses) {
+        return moodAnalyses.stream()
+                .collect(Collectors.groupingBy(
+                        MoodAnalysis::getMoodCategory,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                moodList -> {
+                                    List<String> subCategories = moodList.stream()
+                                            .map(MoodAnalysis::getMoodSubcategory)
+                                            .collect(Collectors.toList());
+
+                                    Map<String, Object> result = new HashMap<>();
+                                    result.put("count", (long) moodList.size());
+                                    result.put("subCategories", subCategories);
+                                    return result;
+                                }
+                        )
+                ));
+    }
+
+    private List<EmotionDTO> convertEmotionsToDTO(Diary diary) {
+        return diary.getEmotions().stream()
+                .map(emotion -> new EmotionDTO(
+                        emotion.getId(),
+                        diary.getId(),
+                        emotion.getMainEmotion(),
+                        emotion.getSubEmotion(),
+                        emotion.getCreatedAt()
+                )).collect(Collectors.toList());
     }
 
 }

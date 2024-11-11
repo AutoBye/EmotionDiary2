@@ -2,7 +2,6 @@ package org.ppocharong.emotiondiary2.controller;
 
 import org.ppocharong.emotiondiary2.model.Sticker;
 import org.ppocharong.emotiondiary2.service.StickerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +14,11 @@ import java.util.List;
 @RequestMapping("/api/stickers")
 public class StickerController {
 
-    @Autowired
-    private StickerService stickerService;
+    private final StickerService stickerService;
+
+    public StickerController (StickerService stickerService) {
+        this.stickerService = stickerService;
+    }
 
     //
     @GetMapping("/insert-from-folder")
@@ -30,4 +32,5 @@ public class StickerController {
     public List<Sticker> getAllStickers() {
         return stickerService.getAllStickers();
     }
+
 }

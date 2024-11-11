@@ -6,6 +6,7 @@ import org.ppocharong.emotiondiary2.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 
 @RestController
@@ -21,7 +22,7 @@ public class AuthController {
       * @Param username, password
       * */
     @PostMapping(value = "/login")
-    public ResponseEntity<?> getLogin(@RequestBody UserDTO userDTO, HttpSession session) {
+    public ResponseEntity<Map<String, String>> getLogin(@RequestBody UserDTO userDTO, HttpSession session) {
         return userService.login(userDTO, session);
     }
 
@@ -29,7 +30,7 @@ public class AuthController {
      * @Param username, email, password, gender, ageGroup
      * */
     @PostMapping(value = "/register")
-    public ResponseEntity<?> getRegister(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Map<String, String>> getRegister(@RequestBody UserDTO userDTO) {
         return userService.register(userDTO);
     }
 

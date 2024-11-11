@@ -1,5 +1,6 @@
 package org.ppocharong.emotiondiary2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,16 +16,18 @@ import java.time.Instant;
 @Table(name = "user_sticker_customizations")
 public class UserStickerCustomization {
     @Id
-    @ColumnDefault("nextval('user_sticker_customizations_customization_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID 자동 생성 설정
     @Column(name = "customization_id", nullable = false)
     private Long id;
 
+    // UserStickerCustomization 클래스
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "diary_id", nullable = false)
+    @JsonBackReference
     private Diary diary;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "sticker_id", nullable = false)
     private Sticker sticker;

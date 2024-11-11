@@ -7,9 +7,11 @@ function Header({ isLoggedIn, username, onLogout }) {
     return (
         <header className="header">
             <nav className="nav">
-                {/* 홈 링크를 별도의 div로 감싸 왼쪽에 고정 */}
+                {/* 홈 링크를 이미지로 변경하여 왼쪽에 고정 */}
                 <div className="nav-left">
-                    <Link to="/" className="link home-link">홈(사진)</Link>
+                    <Link to="/" className="link home-link">
+                        <img src="/images/headerlogo.png" alt="홈" className="home-logo" style={{ width: '100px', height: 'auto' }} />
+                    </Link>
                 </div>
 
                 {/* 나머지 링크들을 중앙 정렬 */}
@@ -24,7 +26,7 @@ function Header({ isLoggedIn, username, onLogout }) {
                     {isLoggedIn ? (
                         <div className="user-info">
                             <span className="username">{username}</span>
-                            <button onClick={onLogout} className="logout-button">로그아웃</button>
+                            <button onClick={onLogout} className="logout-butㅁton">로그아웃</button>
                         </div>
                     ) : (
                         <Link to="/login" className="link small-link">로그인</Link>

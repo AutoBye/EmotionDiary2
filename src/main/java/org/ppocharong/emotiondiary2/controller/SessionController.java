@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.Map;
 
 @RestController
 public class SessionController {
 
     @CrossOrigin(origins = "http://192.168.123.161:3000", allowCredentials = "true")
     @GetMapping("/check-session")
-    public ResponseEntity<?> checkSession(HttpSession session) {
+    public ResponseEntity<Map<String, String>> checkSession(HttpSession session) {
         String username = (String) session.getAttribute("user");
 
         if (username != null) {

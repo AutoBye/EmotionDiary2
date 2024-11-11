@@ -27,11 +27,21 @@ function DiaryDetail() {
         상처: { count: 0, subcategories: [] }
     });
 
+    // 테마 스타일 정의
+    const themeStyles = {
+        default: { backgroundColor: 'white', color: 'black' },
+        dark: { backgroundColor: '#333', color: 'white' },
+        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+    };
+
     useEffect(() => {
         axios.get(`http://192.168.123.161:8080/diaries/${id}`, { withCredentials: true })
             .then((response) => {
                 setDiary(response.data);
                 setLikeCount(response.data.likeCount);
+                // console.log("스티커 데이터:", response.data.stickers); // 스티커 데이터 확인
+                // 나머지 로직...
+
 
                 const emotionCounts = response.data.emotionCounts || {};
                 const updatedEmotionData = { ...emotionData };
@@ -41,13 +51,15 @@ function DiaryDetail() {
                 });
                 setEmotionData(updatedEmotionData);
 
+
                 const userEmotions = response.data.emotions;
 
+                const diaryId = id;
+                // console.log(diaryId);
                 // 감정 분석 피드백 요청
-                axios.post('http://192.168.123.161:8080/emotion/analyze', { userEmotions, emotionCounts })
+                axios.post('http://192.168.123.161:8080/emotion/analyze', { userEmotions, emotionCounts, diaryId})
                     .then(feedbackResponse => setFeedback(feedbackResponse.data.feedback))
                     .catch(error => console.error("피드백 요청 실패:", error));
-
             })
             .catch((error) => {
                 console.error('일기 상세 데이터를 불러오는 데 실패했습니다:', error);
@@ -107,10 +119,6 @@ function DiaryDetail() {
     };
 
 
-
-
-
-
     if (error) {
         return <p className="error-message">{error}</p>;
     }
@@ -119,15 +127,31 @@ function DiaryDetail() {
         return <p>로딩 중...</p>;
     }
 
+    const headThemeStyles = {
+        default: { backgroundColor: 'white' },
+        dark: { backgroundColor: '#333', color: 'white' },
+        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+    };
+
     return (
         <div className="write-wrapper">
             {/* 일기 상세 보기 폼 */}
-            <div className="write-container" style={{position: 'relative'}}>
-                <h2 className="write-heading">{diary.title || '제목 없음'}</h2>
+            <div
+                className="write-container"
+                style={{
+                    position: 'relative',
+                    alignContent: "center",
+                    ...themeStyles[diary.theme?.themeName] || themeStyles.default
+                }}
+            >
+                <h2 className="write-heading"
+                    style={{
+                        ...headThemeStyles[diary.theme?.themeName] || themeStyles.default
+                    }}
+                >{diary.title || '제목 없음'}</h2>
                 <div className="write-content"
                      style={{
-                         height: `901px`,
-                         width: `600px`
+
                      }}>
                     <p className="diary-content">{diary.content}</p>
                     <p>공개 여부: {diary.isPublic ? '공개' : '비공개'}</p>
@@ -140,27 +164,31 @@ function DiaryDetail() {
                 {/* 드롭된 스티커들 렌더링 */}
                 {diary.stickers && diary.stickers.length > 0 && (
                     <div className="stickers-container">
-                        {diary.stickers.map((sticker, index) => (
-                            <img
-                                key={index}
-                                src={`http://192.168.123.161:8080${sticker.imagePath}`}
-                                alt={`스티커 ${sticker.stickerId}`}
-                                className="dropped-sticker"
-                                style={{
-                                    position: 'absolute',
-                                    top: `${sticker.positionY}px`,
-                                    left: `${sticker.positionX}px`,
-                                    width: `${sticker.scale * 50}px`,
-                                    height: `${sticker.scale * 50}px`,
-                                    transform: `rotate(${sticker.rotation}deg)`,
-                                    pointerEvents: 'none'
-                                }}
-                            />
-                        ))}
+                        {diary.stickers.map((sticker, index) => {
+                            // console.log("스티커 이미지 URL:", sticker.sticker.imageUrl); // 스티커의 이미지 경로 확인
+                            // console.log("공개여부 : ", diary.visibility); // 스티커의 이미지 경로 확인
+                            return (
+                                <img
+                                    key={index}
+                                    src={`http://192.168.123.161:8080${sticker.sticker.imageUrl}`}
+                                    alt={`스티커 ${sticker.stickerId}`}
+                                    className="dropped-sticker"
+                                    style={{
+                                        position: 'absolute',
+                                        top: `${sticker.positionY}px`,
+                                        left: `${sticker.positionX}px`,
+                                        width: `${sticker.scale * 50}px`,
+                                        height: `${sticker.scale * 50}px`,
+                                        transform: `rotate(${sticker.rotation}deg)`,
+                                        pointerEvents: 'none'
+                                    }}
+                                />
+                            );
+                        })}
                     </div>
                 )}
                 {/* 공감 버튼 (공개된 일기인 경우에만 표시) */}
-                {diary.isPublic && (
+                {diary.visibility && (
                     <button
                         onClick={handleLikeClick}
                         className="like-button"

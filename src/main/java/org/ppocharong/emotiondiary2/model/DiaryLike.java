@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 @Table(name = "diary_likes")
 public class DiaryLike {
     @Id
-    @ColumnDefault("nextval('diary_likes_like_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID 자동 생성 설정
     @Column(name = "like_id", nullable = false)
     private Long id;
 

@@ -8,7 +8,7 @@ import Slider from "react-slick";
 // 화살표 컴포넌트
 const CustomArrow = ({ className, style, onClick, direction }) => (
     <div
-        className={`${className} custom-arrow`}
+        className={`${className} custom-arrow ${direction}`}
         style={{
             ...style,
             display: "flex",
@@ -16,16 +16,17 @@ const CustomArrow = ({ className, style, onClick, direction }) => (
             justifyContent: "center",
             background: "rgba(0, 0, 0, 0.5)",
             borderRadius: "50%",
-            width: "23px",
-            height: "23px",
+            width: 23,
+            height: 23,
             zIndex: 1,
             cursor: "pointer",
-            [direction === 'left' ? 'left' : 'right']: "10px",
+            position: "absolute", // 위치를 명확히 고정
+            [direction === 'left' ? 'left' : 'right']: 10,
         }}
         onClick={onClick}
-    >
-    </div>
+    />
 );
+
 
 function Login() {
     return <h2 className="fade-in">로그인</h2>;
@@ -44,13 +45,13 @@ function PublicDiary() {
 }
 
 const sliderSettings = {
-    dots: true, // 슬라이드 아래에 점(dot) 내비게이션 표시
-    infinite: true, // 슬라이드가 끝까지 가면 처음으로 되돌아가며 무한 루프 형태로 반복
-    speed: 600, // 슬라이드 전환 속도를 500ms로 설정
-    slidesToShow: 1, // 한 번에 표시할 슬라이드 수를 1개로 설정
-    slidesToScroll: 1, // 한 번에 넘길 슬라이드 수를 1개로 설정
-    nextArrow: <CustomArrow direction="right" />, // 오른쪽으로 이동하는 사용자 정의 화살표 컴포넌트
-    prevArrow: <CustomArrow direction="left" />, // 왼쪽으로 이동하는 사용자 정의 화살표 컴포넌트
+    dots: true,
+    infinite: true,
+    speed: 600,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <CustomArrow direction="right" />, // 화살표 컴포넌트를 함수형 컴포넌트로 호출
+    prevArrow: <CustomArrow direction="left" />,
 };
 
 // Home 컴포넌트
@@ -72,23 +73,42 @@ function Home() {
         <div>
             <main>
                 {/* 섹션으로 이동하는 버튼 */}
-                <div className="button-container">
-                    <button onClick={() => scrollToSection(section1Ref, -80)}>소개</button> {/* 첫 섹션 오프셋 -50 적용 */}
-                    <button onClick={() => scrollToSection(section2Ref)}>기능소개</button>
-                    <button onClick={() => scrollToSection(section3Ref)}>감정 일기 장점</button>
-                    <button onClick={() => scrollToSection(section4Ref)}>감정 일기 쓰는 방법</button>
+                <div className="sticky-wrapper">
+                    <div className="button-container">
+                        <button onClick={() => scrollToSection(section1Ref, -80)}>소개</button>
+                        {/* 첫 섹션 오프셋 -80 적용 */}
+                        <button onClick={() => scrollToSection(section2Ref)}>기능소개</button>
+                        <button onClick={() => scrollToSection(section3Ref)}>좋은점</button>
+                        <button onClick={() => scrollToSection(section4Ref)}>꿀팁</button>
+                    </div>
+                    <div className="small-line"></div>
+                    {/* 헤더 아래의 긴 줄 */}
                 </div>
-                <div className="small-line"></div> {/* 헤더 아래의 긴 줄 */}
 
                 <Routes>
                     <Route path="/" element={
                         <div>
                             <section ref={section1Ref} className="fade-in section-style section-one">
-                                <h1>자신의 감정에 <span className="subtext">이름을 붙여보세요, 감정란</span></h1>
+                                <h1>일기를 쓰면 당신의 <span className="subtext">감정을 알려주는 일기장, 감정란</span></h1>
                                 <p className="highlight-text">
                                     오늘 하루 자신의 솔직한 감정을 일기장에 기록하고, AI가 분석한 감정과 자신의 감정을 비교해보세요.
                                 </p>
+                                <div className="image-container">
+                                    <img src="/images/Banner1.png" alt="Banner1" className="banner1-image"/>
+                                    <div className="text-container">
+                                        <div className="highlight2-text">
+                                            <span>'감 정 란'  을 골 라</span>
+                                            <span>오 늘 느 낀 감 정 에</span>
+                                            <span>이 름 을 붙 여 보 세 요</span>
+                                        </div>
+                                        <p className="highlight3-text">
+                                            모호했던 감정들이 좀 더 분명해지고 기분이 한결 개운해질거에요 !
+                                        </p>
+                                    </div>
+                                    <img src="/images/Banner2.png" alt="Banner2" className="banner2-image"/>
+                                </div>
                             </section>
+
 
                             <section ref={section2Ref} className="fade-in section-style">
                                 <Slider {...sliderSettings}>
@@ -129,11 +149,11 @@ function Home() {
                                 </ul>
                             </section>
                         </div>
-                    } />
-                    <Route path="/write" element={<WriteDiary />} />
-                    <Route path="/my-diary" element={<MyDiary />} />
-                    <Route path="/public-diary" element={<PublicDiary />} />
-                    <Route path="/login" element={<Login />} />
+                    }/>
+                    <Route path="/write" element={<WriteDiary/>}/>
+                    <Route path="/my-diary" element={<MyDiary/>}/>
+                    <Route path="/public-diary" element={<PublicDiary/>}/>
+                    <Route path="/login" element={<Login/>}/>
                 </Routes>
             </main>
         </div>

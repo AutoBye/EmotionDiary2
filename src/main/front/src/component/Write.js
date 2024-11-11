@@ -8,26 +8,33 @@ function Write() {
     const [content, setContent] = useState('');
     const [isPublic, setIsPublic] = useState(false);
     const [selectedMainEmotion, setSelectedMainEmotion] = useState('');
-    const [selectedSubEmotions, setSelectedSubEmotions] = useState([]);
+    // const [selectedSubEmotions, setSelectedSubEmotions] = useState([]);
     const [selectedEmotions, setSelectedEmotions] = useState([]);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [themes, setThemes] = useState([]); // 테마 목록 상태 추가
+    const [selectedTheme, setSelectedTheme] = useState('default'); // 선택된 테마
+
     const navigate = useNavigate();
 
     const [stickers, setStickers] = useState([]);
     const [droppedStickers, setDroppedStickers] = useState([]);
 
-    // 서버에서 스티커 목록 가져오기
+    // 서버에서 스티커 목록과 테마 목록 가져오기
     useEffect(() => {
         axios.get('http://192.168.123.161:8080/api/stickers', { withCredentials: true })
             .then(response => {
-                if (response.data) {
-                    setStickers(response.data);
-                }
+                setStickers(response.data || []);
+                //console.log('스티커 데이터:', response.data); // 스티커 데이터 확인
             })
-            .catch(error => {
-                console.error('스티커 목록을 가져오는 중 오류가 발생했습니다.', error);
-            });
+            .catch(error => console.error('스티커 목록을 가져오는 중 오류가 발생했습니다.', error));
+
+        axios.get('http://192.168.123.161:8080/api/themes', { withCredentials: true })
+            .then(response => {
+                setThemes(response.data || []);
+                console.log('테마 데이터:', response.data); // 테마 데이터 확인
+            })
+            .catch(error => console.error('테마 목록을 가져오는 중 오류가 발생했습니다.', error));
     }, []);
 
     const handleStickerDragStart = (sticker, e) => {
@@ -58,6 +65,26 @@ function Write() {
         e.preventDefault();
     };
 
+    const handleThemeSelect = (theme) => {
+        setSelectedTheme(theme);
+    };
+
+    const themeStyles = {
+        default: { backgroundColor: 'white' },
+        dark: { backgroundColor: '#333', color: 'white' },
+        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+    };
+
+    const headThemeStyles = {
+        default: { backgroundColor: 'white' },
+        dark: { backgroundColor: '#333', color: 'white' },
+        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+    };
+
+
+
+
+
     const requiredEmotions = ['기쁨란'];
 
     const mainEmotions = [
@@ -69,11 +96,11 @@ function Write() {
         { name: '상처란', subEmotions: ["불우한", "고립된", "괴로워하는", "배신당한", "버려진", "상처", "억울한", "질투하는", "충격 받은", "희생된"] }
     ];
 
-    const isCategorySelected = (emotionName) => {
-        return mainEmotions
-            .find(emotion => emotion.name === emotionName)
-            .subEmotions.some(subEmotion => selectedSubEmotions.includes(subEmotion));
-    };
+    // const isCategorySelected = (emotionName) => {
+    //     return mainEmotions
+    //         .find(emotion => emotion.name === emotionName)
+    //         .subEmotions.some(subEmotion => selectedSubEmotions.includes(subEmotion));
+    // };
 
     const handleMainEmotionClick = (emotion) => {
         setSelectedMainEmotion(prevEmotion => prevEmotion === emotion ? '' : emotion);
@@ -108,8 +135,8 @@ function Write() {
         droppedStickers.forEach(({ stickerId, x, y }) => {
             console.log({
                 stickerId: stickerId,
-                x: x,
-                y: y
+                positionX: x,
+                positionY: y
             });
         });
 
@@ -118,10 +145,11 @@ function Write() {
             content,
             visibility: isPublic,
             emotions: selectedEmotions,
+            theme: selectedTheme, // 선택한 테마 추가
             stickers: droppedStickers.map(({ stickerId, x, y }) => ({
                 sticker: { id: stickerId },
-                x: isNaN(parseFloat(x)) ? 0.0 : parseFloat(x),
-                y: isNaN(parseFloat(y)) ? 0.0 : parseFloat(y),
+                positionX: isNaN(parseFloat(x)) ? 0.0 : parseFloat(x),
+                positionY: isNaN(parseFloat(y)) ? 0.0 : parseFloat(y),
                 scale: 1.0,
                 rotation: 0.0,
             }))
@@ -150,9 +178,15 @@ function Write() {
                 className="write-container"
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
-                style={{position: 'relative'}}
+                style={{
+                    position: 'relative',
+                    ...themeStyles[selectedTheme?.themeName] || themeStyles.default // 선택된 테마 스타일 적용
+                }}
             >
-                <h2 className="write-heading">오늘 나의 하루</h2>
+                <h2 className="write-heading"
+                    style={{
+                    ...headThemeStyles[selectedTheme?.themeName] || themeStyles.default // 선택된 테마 스타일 적용
+                }}>오늘 너의 하루는?</h2>
                 <form onSubmit={handleSubmit} className="write-form">
                     <input
                         type="text"
@@ -251,9 +285,26 @@ function Write() {
                         />
                     ))}
                 </div>
+
+                {/* 테마 선택 섹션 */}
+                <div className="theme-selection">
+                    <h3>테마 선택하기:</h3>
+                    <div className="themes-list">
+                        {themes.map((theme) => (
+                            <button
+                                key={theme.id}
+                                className={`theme-button ${selectedTheme === theme.id ? 'active' : ''}`}
+                                onClick={() => handleThemeSelect(theme)}
+                            >
+                                {theme.themeName}
+                            </button>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
-    );
+    )
+        ;
 }
 
 export default Write;

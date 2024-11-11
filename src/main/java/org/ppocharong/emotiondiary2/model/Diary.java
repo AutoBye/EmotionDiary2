@@ -1,5 +1,6 @@
 package org.ppocharong.emotiondiary2.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,15 +52,17 @@ public class Diary {
     @Column(name = "like_count")
     private Integer likeCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Emotion> emotions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<UserStickerCustomization> userStickerCustomizations;  // UserStickerCustomization 매핑 추가
 
 

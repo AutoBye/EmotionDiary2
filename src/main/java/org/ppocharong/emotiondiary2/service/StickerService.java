@@ -2,6 +2,7 @@ package org.ppocharong.emotiondiary2.service;
 
 import org.ppocharong.emotiondiary2.model.Sticker;
 import org.ppocharong.emotiondiary2.repository.StickerRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,10 +19,12 @@ public class StickerService {
         this.stickerRepository = stickerRepository;
     }
 
+    @Value("${file.uploads.sticker-path}")
+    private String folderPath;
+
     /** 스티커 업로드 API 호출만 하면 작동해 */
     public void insertStickersFromFolder() {
         // 파일 경로 설정 (이미지 파일이 있는 폴더)
-        String folderPath = "C:/Users/kiusw/Desktop/JAVA/KIU_TEAM_WEB/EmotionDiary2/uploads/stickers/";
         File folder = new File(folderPath);
 
         if (folder.exists() && folder.isDirectory()) {
@@ -62,4 +65,6 @@ public class StickerService {
     public List<Sticker> getAllStickers() {
         return stickerRepository.findAll();
     }
+
+
 }

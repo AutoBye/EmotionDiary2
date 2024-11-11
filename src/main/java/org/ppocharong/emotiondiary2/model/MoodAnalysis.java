@@ -16,7 +16,7 @@ import java.time.Instant;
 @Table(name = "mood_analysis")
 public class MoodAnalysis {
     @Id
-    @ColumnDefault("nextval('mood_analysis_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID 자동 생성 설정
     @Column(name = "id", nullable = false)
     private Long id;
 
