@@ -8,13 +8,10 @@ import org.ppocharong.emotiondiary2.dto.UserStickerCustomizationDTO;
 import org.ppocharong.emotiondiary2.model.*;
 import org.ppocharong.emotiondiary2.repository.*;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -26,25 +23,36 @@ import java.util.stream.Collectors;
 @Service
 public class DiaryService {
 
+    private static final String DIARY_NOT_FOUND_MESSAGE = "해당 일기를 찾을 수 없습니다.";
+    private static final String USER_NOT_FOUND_MESSAGE = "사용자를 찾을 수 없습니다.";
+    private static final String LOGIN_REQUIRED_MESSAGE = "로그인이 필요합니다.";
+    private static final String DELETE_PERMISSION_DENIED_MESSAGE = "해당 일기를 삭제할 권한이 없습니다.";
+    private static final String SELF_LIKE_FORBIDDEN_MESSAGE = "자신의 일기에는 공감을 할 수 없습니다.";
+    private static final String ALREADY_LIKED_MESSAGE = "이미 공감한 일기입니다.";
+    private static final String DIARY_SAVED_SUCCESS_MESSAGE = "일기가 성공적으로 저장되었습니다.";
+    private static final String DIARY_DELETED_SUCCESS_MESSAGE = "일기가 성공적으로 삭제되었습니다.";
+
+
     private final DiaryRepository diaryRepository;
     private final UserRepository userRepository;
     private final StickerRepository stickerRepository;
     private final UserStickerCustomizationRepository stickerCustomizationRepository;
     private final DiaryLikeRepository diaryLikeRepository;
     private final MoodAnalysisRepository moodAnalysisRepository;
-    private final ThemeRepository themeRepository;
+
+    private final EmotionPredictionService emotionPredictionService;
 
     public DiaryService(DiaryRepository diaryRepository, UserRepository userRepository,
                         StickerRepository stickerRepository, UserStickerCustomizationRepository stickerCustomizationRepository,
                         DiaryLikeRepository diaryLikeRepository, MoodAnalysisRepository moodAnalysisRepository,
-                        ThemeRepository themeRepository) {
+                        EmotionPredictionService emotionPredictionService) {
         this.diaryRepository = diaryRepository;
         this.userRepository = userRepository;
         this.stickerRepository = stickerRepository;
         this.stickerCustomizationRepository = stickerCustomizationRepository;
         this.diaryLikeRepository = diaryLikeRepository;
         this.moodAnalysisRepository = moodAnalysisRepository;
-        this.themeRepository = themeRepository;
+        this.emotionPredictionService = emotionPredictionService;
     }
 
     /** 세션에서 유저 네임 가져오기 */
@@ -52,74 +60,12 @@ public class DiaryService {
         return (String) session.getAttribute("user");
     }
 
-    /** 분석 API 호출 속도 느려서 비동기 처리 */
-    @Async
-    public void callEmotionPredictionAPI(Long diaryId, String content, String gender, String age) {
-        //문장 분할
-        String[] sentences = content.split("(?<=\\.)|(?<=\\?)|(?<=!)");
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        //모델에 사용할 변수명 맞추기
-        gender = gender.equals("남") ? "남성" : "여성";
-        age = convertAgeToCategory(age);
-
-        //api 주소
-        String apiUrl = "http://localhost:5000/predict";
-
-        //헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-
-        //일기 확인
-        Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new RuntimeException("해당 ID의 다이어리를 찾을 수 없습니다."));
-
-        for (String sentence : sentences) {
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("text", sentence.trim());
-            requestBody.put("age", age);
-            requestBody.put("gender", gender);
-
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-
-            try {
-                ResponseEntity<Map> response = restTemplate.exchange(apiUrl, HttpMethod.POST, request, Map.class);
-                Map<String, Object> responseBody = response.getBody();
-
-                if (responseBody != null) {
-                    String moodCategory = (String) responseBody.get("category");
-                    String moodSubcategory = (String) responseBody.get("subcategory");
-
-                    MoodAnalysis moodAnalysis = new MoodAnalysis();
-                    moodAnalysis.setDiary(diary);
-                    moodAnalysis.setMoodCategory(moodCategory);
-                    moodAnalysis.setMoodSubcategory(moodSubcategory);
-                    moodAnalysis.setMoodTemp(BigDecimal.valueOf(0));
-                    moodAnalysis.setAnalysisDate(Instant.now());
-                    moodAnalysisRepository.save(moodAnalysis);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    /** 비동기 분석 메서드 호출 */
+    public void predictEmotion(Diary diary, User user) {
+        emotionPredictionService.callEmotionPredictionAPI(diary.getId(), diary.getContent(), user.getGender(), user.getAgeGroup());
     }
 
-    /** API서버에 맞게 변경 */
-    private String convertAgeToCategory(String age) {
-        switch (age) {
-            case "10대":
-                return "청소년";
-            case "20대":
-            case "30대":
-                return "청년";
-            case "40대":
-            case "50대":
-                return "중년";
-            default:
-                return "노년";
-        }
-    }
+
 
     /** 일기 쓰기 서비스 계층 */
     @Transactional
@@ -127,10 +73,10 @@ public class DiaryService {
         String username = getSessionUsername(session);
 
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LOGIN_REQUIRED_MESSAGE);
         } else {
 
-            User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));// 다이어리 엔티티 생성
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
 
             Diary diary = new Diary();
 
@@ -142,18 +88,11 @@ public class DiaryService {
             diary.setCreatedAt(Instant.now());
             diary.setUpdatedAt(Instant.now());
             diary.setLikeCount(0);
-            //TODO - 테마 설정 저장하자.
-            // 테마 이름으로 ID 찾기 및 설정
 
             Theme theme = diaryDTO.getTheme();
             System.out.println(theme.getThemeName());
             diary.setTheme(theme);
 
-//            if (themeName != null) {
-//                Theme theme = themeRepository.findByThemeName(themeName)
-//                        .orElseThrow(() -> new RuntimeException("해당 이름의 테마를 찾을 수 없습니다: " + themeName));
-//                diary.setTheme(theme);  // 테마 ID 설정
-//            }
             // 일기 기본정보 저장중
 
 
@@ -198,9 +137,9 @@ public class DiaryService {
             }
 
             // 비동기 메서드 호출
-            callEmotionPredictionAPI(diary.getId(), diary.getContent(), user.getGender(), user.getAgeGroup());
+            predictEmotion(diary, user);
         }
-        return ResponseEntity.ok("일기가 성공적으로 저장되었습니다.");
+        return ResponseEntity.ok(DIARY_SAVED_SUCCESS_MESSAGE);
     }
 
 
@@ -215,11 +154,11 @@ public class DiaryService {
         }
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
 
         List<Diary> diaries = diaryRepository.findByUser(user);
 
-        // DTO로 변환하여 반환
+        // DTO 로 변환하여 반환
         List<DiaryDTO> diaryDTOList = diaries.stream()
                 .map(diary -> {
                     DiaryDTO dto = new DiaryDTO();
@@ -253,7 +192,7 @@ public class DiaryService {
         // 모든 공개 일기 조회
         List<Diary> diaries = diaryRepository.findAllVisibleDiaries();
 
-        // DiaryDTO로 변환하여 반환
+        // DiaryDTO 로 변환하여 반환
         List<DiaryDTO> diaryDTOList = diaries.stream()
                 .map(diary -> {
                     DiaryDTO dto = new DiaryDTO();
@@ -293,17 +232,16 @@ public class DiaryService {
 
         //사용자 조회 실패 시 예외 처리
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND_MESSAGE));
 
-        // 사용자 조회 시 사용자 정보가 없으면 null로 설정
-        //User user = userRepository.findByUsername(username).orElse(null);
+        // 사용자 조회 시 사용자 정보가 없으면 null 로 설정할까?
 
         // 일기 조회 실패 시 예외 처리
         Diary diary = diaryRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일기를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, DIARY_NOT_FOUND_MESSAGE));
 
-        // 일기가 비공개이며 작성자가 현재 사용자가 아닐 경우 접근 금지
-        if (!diary.getVisibility() && !diary.getUser().getId().equals(Objects.requireNonNull(user).getId())) {
+        // 일기가 비공개이며 작성자가 현재 사용자가 아닐 경우 접근 금지  && !diary.getUser().getId().equals(Objects.requireNonNull(user).getId())
+        if (Boolean.FALSE.equals(diary.getVisibility()) && !diary.getUser().getId().equals(Objects.requireNonNull(user).getId()) ) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
@@ -332,26 +270,6 @@ public class DiaryService {
                 diary.getUser().getUsername()
         );
 
-        // DiaryDTO에 포함된 스티커 정보 출력
-        //System.out.println("DiaryDTO with Stickers:");
-        if (diaryDetails.getStickers() != null) {
-            for (UserStickerCustomizationDTO sticker : diaryDetails.getStickers()) {
-//                System.out.println("Sticker ID: " + sticker.getId());
-//                System.out.println("Sticker Name: " + sticker.getSticker().getStickerName());
-//                System.out.println("Sticker Image URL: " + sticker.getSticker().getImageUrl());
-//                System.out.println("Sticker Description: " + sticker.getSticker().getDescription());
-//                System.out.println("Sticker PositionX: " + sticker.getPositionX());
-//                System.out.println("Sticker PositionY: " + sticker.getPositionY());
-//                System.out.println("Sticker Scale: " + sticker.getScale());
-//                System.out.println("Sticker Rotation: " + sticker.getRotation());
-//                System.out.println("Sticker Created At: " + sticker.getCreatedAt());
-//                System.out.println("---------");
-            }
-        } else {
-            System.out.println("No stickers available in DiaryDTO.");
-        }
-
-
         return ResponseEntity.ok(diaryDetails);
     }
 
@@ -361,21 +279,21 @@ public class DiaryService {
         String username = getSessionUsername(session);
 
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LOGIN_REQUIRED_MESSAGE);
         }
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
 
         Diary diary = diaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 일기를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(DIARY_NOT_FOUND_MESSAGE));
 
         if (!diary.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 일기를 삭제할 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(DELETE_PERMISSION_DENIED_MESSAGE);
         }
 
         diaryRepository.delete(diary);
-        return ResponseEntity.ok("일기가 성공적으로 삭제되었습니다.");
+        return ResponseEntity.ok(DIARY_DELETED_SUCCESS_MESSAGE);
     }
 
     /** 공감하기 서비스 */
@@ -385,21 +303,21 @@ public class DiaryService {
         String username = getSessionUsername(session);
 
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LOGIN_REQUIRED_MESSAGE);
         }
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
 
         Diary diary = diaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 일기를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(DIARY_NOT_FOUND_MESSAGE));
 
         if (diary.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("자신의 일기에는 공감을 할 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(SELF_LIKE_FORBIDDEN_MESSAGE);
         }
 
         if (diaryLikeRepository.existsByUserIdAndDiary(user.getId(), diary)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이미 공감한 일기입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ALREADY_LIKED_MESSAGE);
         }
 
         diary.setLikeCount(diary.getLikeCount() + 1);
@@ -427,14 +345,14 @@ public class DiaryService {
                                 stickerCustomization.getSticker().getStickerName(),
                                 stickerCustomization.getSticker().getImageUrl(),
                                 stickerCustomization.getSticker().getDescription(),
-                                stickerCustomization.getSticker().getCreatedAt()),
+                                stickerCustomization.getSticker().getCreatedAt()
+                        ),
                         stickerCustomization.getPositionX(),
                         stickerCustomization.getPositionY(),
                         stickerCustomization.getScale(),
                         stickerCustomization.getRotation(),
                         stickerCustomization.getCreatedAt()
-                )).collect(Collectors.toList());
-
+                )).toList();
     }
 
     private Map<String, Map<String, Object>> groupMoodAnalysis(List<MoodAnalysis> moodAnalyses) {
@@ -446,7 +364,7 @@ public class DiaryService {
                                 moodList -> {
                                     List<String> subCategories = moodList.stream()
                                             .map(MoodAnalysis::getMoodSubcategory)
-                                            .collect(Collectors.toList());
+                                            .toList(); // Collectors.toList() 대신 toList() 사용
 
                                     Map<String, Object> result = new HashMap<>();
                                     result.put("count", (long) moodList.size());
@@ -465,7 +383,7 @@ public class DiaryService {
                         emotion.getMainEmotion(),
                         emotion.getSubEmotion(),
                         emotion.getCreatedAt()
-                )).collect(Collectors.toList());
+                )).toList();
     }
 
 }

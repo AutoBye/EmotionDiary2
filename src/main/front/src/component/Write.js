@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import '../component/Style.css';
+import Modal from './diarymodaltest'; // 모달 컴포넌트 가져오기
 
 function Write() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [isPublic, setIsPublic] = useState(false);
     const [selectedMainEmotion, setSelectedMainEmotion] = useState('');
-    // const [selectedSubEmotions, setSelectedSubEmotions] = useState([]);
     const [selectedEmotions, setSelectedEmotions] = useState([]);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [themes, setThemes] = useState([]); // 테마 목록 상태 추가
     const [selectedTheme, setSelectedTheme] = useState('default'); // 선택된 테마
+    const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
 
     const navigate = useNavigate();
 
@@ -22,20 +23,28 @@ function Write() {
 
     // 서버에서 스티커 목록과 테마 목록 가져오기
     useEffect(() => {
-        axios.get('http://192.168.123.161:8080/api/stickers', { withCredentials: true })
+        axios.get('http://192.168.123.161:8080/api/stickers', {withCredentials: true})
             .then(response => {
                 setStickers(response.data || []);
                 //console.log('스티커 데이터:', response.data); // 스티커 데이터 확인
             })
-            .catch(error => console.error('스티커 목록을 가져오는 중 오류가 발생했습니다.', error));
-
-        axios.get('http://192.168.123.161:8080/api/themes', { withCredentials: true })
+            .catch(error =>  {
+                const errorMessage = error.response?.data;
+                setModalMessage(errorMessage); // 모달 메시지 설정
+            });
+        axios.get('http://192.168.123.161:8080/api/themes', {withCredentials: true})
             .then(response => {
                 setThemes(response.data || []);
-                console.log('테마 데이터:', response.data); // 테마 데이터 확인
+                // console.log('테마 데이터:', response.data); // 테마 데이터 확인
             })
-            .catch(error => console.error('테마 목록을 가져오는 중 오류가 발생했습니다.', error));
+            .catch(error => {
+                const errorMessage = error.response?.data;
+                setModalMessage(errorMessage); // 모달 메시지 설정
+            });
     }, []);
+
+
+    const closeModal = () => setModalMessage(''); // 모달 닫기
 
     const handleStickerDragStart = (sticker, e) => {
         e.dataTransfer.setData('stickerId', sticker.stickerId);
@@ -70,37 +79,28 @@ function Write() {
     };
 
     const themeStyles = {
-        default: { backgroundColor: 'white' },
-        dark: { backgroundColor: '#333', color: 'white' },
-        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+        default: {backgroundColor: 'white'},
+        dark: {backgroundColor: '#333', color: 'white'},
+        nature: {backgroundColor: '#a8e6cf', color: '#3a3a3a'}
     };
 
     const headThemeStyles = {
-        default: { backgroundColor: 'white' },
-        dark: { backgroundColor: '#333', color: 'white' },
-        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+        default: {backgroundColor: 'white'},
+        dark: {backgroundColor: '#333', color: 'white'},
+        nature: {backgroundColor: '#a8e6cf', color: '#3a3a3a'}
     };
-
-
-
 
 
     const requiredEmotions = ['기쁨란'];
 
     const mainEmotions = [
-        { name: '기쁨란', subEmotions: ["감사하는", "기쁨", "느긋", "만족스러운", "신뢰하는", "신이 난", "안도", "자신하는", "편안한", "흥분"] },
-        { name: '당황란', subEmotions: ["고립된", "남의 시선을 의식하는", "당황", "부끄러운", "열등감", "외로운", "죄책감의", "한심한", "혐오스러운", "혼란스러운"] },
-        { name: '분노란', subEmotions: ["구역질 나는", "노여워하는", "방어적인", "분노", "성가신", "악의적인", "안달하는", "좌절한", "짜증내는", "툴툴대는"] },
-        { name: '불안란', subEmotions: ["걱정스러운", "당혹스러운", "두려운", "불안", "스트레스 받는", "조심스러운", "초조한", "취약한", "혼란스러운", "회의적인"] },
-        { name: '슬픔란', subEmotions: ["낙담한", "눈물이 나는", "마비된", "비통한", "슬픔", "실망한", "염세적인", "우울한", "환멸을 느끼는", "후회되는"] },
-        { name: '상처란', subEmotions: ["불우한", "고립된", "괴로워하는", "배신당한", "버려진", "상처", "억울한", "질투하는", "충격 받은", "희생된"] }
+        { name: '기쁨란',image: '/images/1.png', subEmotions: ["감사하는", "기쁨", "느긋", "만족스러운", "신뢰하는", "신이 난", "안도", "자신하는", "편안한", "흥분"] },
+        { name: '당황란',image: '/images/2.png' ,subEmotions: ["고립된", "남의 시선을 의식하는", "당황", "부끄러운", "열등감", "외로운", "죄책감의", "한심한", "혐오스러운", "혼란스러운"] },
+        { name: '분노란',image: '/images/3.png', subEmotions: ["구역질 나는", "노여워하는", "방어적인", "분노", "성가신", "악의적인", "안달하는", "좌절한", "짜증내는", "툴툴대는"] },
+        { name: '불안란',image: '/images/4.png' ,subEmotions: ["걱정스러운", "당혹스러운", "두려운", "불안", "스트레스 받는", "조심스러운", "초조한", "취약한", "혼란스러운", "회의적인"] },
+        { name: '슬픔란', image: '/images/5.png',subEmotions: ["낙담한", "눈물이 나는", "마비된", "비통한", "슬픔", "실망한", "염세적인", "우울한", "환멸을 느끼는", "후회되는"] },
+        { name: '상처란', image: '/images/6.png',subEmotions: ["불우한", "고립된", "괴로워하는", "배신당한", "버려진", "상처", "억울한", "질투하는", "충격 받은", "희생된"] }
     ];
-
-    // const isCategorySelected = (emotionName) => {
-    //     return mainEmotions
-    //         .find(emotion => emotion.name === emotionName)
-    //         .subEmotions.some(subEmotion => selectedSubEmotions.includes(subEmotion));
-    // };
 
     const handleMainEmotionClick = (emotion) => {
         setSelectedMainEmotion(prevEmotion => prevEmotion === emotion ? '' : emotion);
@@ -113,13 +113,13 @@ function Write() {
             if (isAlreadySelected) {
                 return prev.filter((emotion) => emotion.subEmotion !== subEmotion);
             } else {
-                return [...prev, { mainEmotion: selectedMainEmotion, subEmotion }];
+                return [...prev, {mainEmotion: selectedMainEmotion, subEmotion}];
             }
         });
     };
 
     const isRequiredEmotionSelected = () => {
-        return selectedEmotions.some(({ mainEmotion }) => requiredEmotions.includes(mainEmotion));
+        return selectedEmotions.some(({mainEmotion}) => requiredEmotions.includes(mainEmotion));
     };
 
     const handleSubmit = (e) => {
@@ -132,7 +132,7 @@ function Write() {
         }
 
         console.log("stickers: ");
-        droppedStickers.forEach(({ stickerId, x, y }) => {
+        droppedStickers.forEach(({stickerId, x, y}) => {
             console.log({
                 stickerId: stickerId,
                 positionX: x,
@@ -146,8 +146,8 @@ function Write() {
             visibility: isPublic,
             emotions: selectedEmotions,
             theme: selectedTheme, // 선택한 테마 추가
-            stickers: droppedStickers.map(({ stickerId, x, y }) => ({
-                sticker: { id: stickerId },
+            stickers: droppedStickers.map(({stickerId, x, y}) => ({
+                sticker: {id: stickerId},
                 positionX: isNaN(parseFloat(x)) ? 0.0 : parseFloat(x),
                 positionY: isNaN(parseFloat(y)) ? 0.0 : parseFloat(y),
                 scale: 1.0,
@@ -157,14 +157,16 @@ function Write() {
             withCredentials: true
         })
             .then((response) => {
-                setMessage("일기가 성공적으로 저장되었습니다.");
-                setError('');
+                //setMessage("일기가 성공적으로 저장되었습니다.");
+                //setError('');
                 navigate("/my-diary");
             })
             .catch((error) => {
-                console.error('일기 저장 중 오류 발생:', error);
-                setError("일기 저장에 실패했습니다.");
-                setMessage('');
+                //console.error('일기 저장 중 오류 발생:', error);
+                //setError("일기 저장에 실패했습니다.");
+                const errorMessage = error.response?.data;
+                setModalMessage(errorMessage); // 모달 메시지 설정
+                //setMessage('');
             });
     };
 
@@ -185,8 +187,8 @@ function Write() {
             >
                 <h2 className="write-heading"
                     style={{
-                    ...headThemeStyles[selectedTheme?.themeName] || themeStyles.default // 선택된 테마 스타일 적용
-                }}>오늘 너의 하루는?</h2>
+                        ...headThemeStyles[selectedTheme?.themeName] || themeStyles.default // 선택된 테마 스타일 적용
+                    }}>오늘 너의 하루는?</h2>
                 <form onSubmit={handleSubmit} className="write-form">
                     <input
                         type="text"
@@ -226,20 +228,24 @@ function Write() {
                     </div>
 
                     <div className="emotion-selection">
-                        <h3>오늘의 감정을 선택하세요:</h3>
+                        <h3>오늘의 감정란을 담아보세요</h3>
                         <div className="main-emotions">
                             {mainEmotions.map((emotion) => (
                                 <div key={emotion.name} className="main-emotion-category">
                                     <button
                                         type="button"
+                                        key={emotion.name}
                                         className={`main-emotion ${selectedMainEmotion === emotion.name ? 'active' : ''}`}
                                         onClick={() => handleMainEmotionClick(emotion.name)}
                                     >
+                                        <img src={emotion.image} alt={emotion.name} className="emotion-image"/>
                                         {emotion.name}
                                     </button>
                                 </div>
                             ))}
                         </div>
+
+
                         <div className="sub-emotions">
                             {filteredSubEmotions.map((subEmotion) => (
                                 <button
@@ -269,6 +275,9 @@ function Write() {
                         style={{position: 'absolute', left: sticker.x, top: sticker.y, width: '50px', height: '50px'}}
                     />
                 ))}
+
+                {/* 모달 표시 */}
+                {modalMessage && <Modal message={modalMessage} onClose={closeModal}/>}
             </div>
 
             <div className="sticker-selection">

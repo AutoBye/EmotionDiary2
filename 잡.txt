@@ -1,0 +1,18 @@
+        // DiaryDTO에 포함된 스티커 정보 출력
+        //System.out.println("DiaryDTO with Stickers:");
+        if (diaryDetails.getStickers() != null) {
+            for (UserStickerCustomizationDTO sticker : diaryDetails.getStickers()) {
+//                System.out.println("Sticker ID: " + sticker.getId());
+//                System.out.println("Sticker Name: " + sticker.getSticker().getStickerName());
+//                System.out.println("Sticker Image URL: " + sticker.getSticker().getImageUrl());
+//                System.out.println("Sticker Description: " + sticker.getSticker().getDescription());
+//                System.out.println("Sticker PositionX: " + sticker.getPositionX());
+//                System.out.println("Sticker PositionY: " + sticker.getPositionY());
+//                System.out.println("Sticker Scale: " + sticker.getScale());
+//                System.out.println("Sticker Rotation: " + sticker.getRotation());
+//                System.out.println("Sticker Created At: " + sticker.getCreatedAt());
+//                System.out.println("---------");
+            }
+        } else {
+            System.out.println("No stickers available in DiaryDTO.");
+        }

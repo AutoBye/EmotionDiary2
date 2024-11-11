@@ -18,10 +18,8 @@ public class SessionController {
         String username = (String) session.getAttribute("user");
 
         if (username != null) {
-            // 세션이 유효할 경우 사용자 이름을 반환
             return ResponseEntity.ok(Collections.singletonMap("username", username));
         } else {
-            // 세션이 없으면 인증 오류 반환
             return ResponseEntity.ok(Collections.singletonMap("username", null));
         }
     }

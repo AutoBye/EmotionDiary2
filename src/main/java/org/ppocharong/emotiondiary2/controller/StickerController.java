@@ -20,14 +20,14 @@ public class StickerController {
         this.stickerService = stickerService;
     }
 
-    //
+    /** 스티커 DB에 넣기 */
     @GetMapping("/insert-from-folder")
     public String insertStickers() {
         stickerService.insertStickersFromFolder();
         return "스티커가 폴더에서 데이터베이스로 삽입되었습니다.";
     }
 
-    // 스티커 목록 조회 API
+    /** 스티커 목록 조회 */
     @GetMapping
     public List<Sticker> getAllStickers() {
         return stickerService.getAllStickers();
