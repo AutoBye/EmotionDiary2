@@ -39,12 +39,13 @@ public class DiaryService {
     private final UserStickerCustomizationRepository stickerCustomizationRepository;
     private final DiaryLikeRepository diaryLikeRepository;
     private final MoodAnalysisRepository moodAnalysisRepository;
+    private final ThemeRepository themeRepository;
 
     private final EmotionPredictionService emotionPredictionService;
 
     public DiaryService(DiaryRepository diaryRepository, UserRepository userRepository,
                         StickerRepository stickerRepository, UserStickerCustomizationRepository stickerCustomizationRepository,
-                        DiaryLikeRepository diaryLikeRepository, MoodAnalysisRepository moodAnalysisRepository,
+                        DiaryLikeRepository diaryLikeRepository, MoodAnalysisRepository moodAnalysisRepository, ThemeRepository themeRepository,
                         EmotionPredictionService emotionPredictionService) {
         this.diaryRepository = diaryRepository;
         this.userRepository = userRepository;
@@ -52,6 +53,7 @@ public class DiaryService {
         this.stickerCustomizationRepository = stickerCustomizationRepository;
         this.diaryLikeRepository = diaryLikeRepository;
         this.moodAnalysisRepository = moodAnalysisRepository;
+        this.themeRepository = themeRepository;
         this.emotionPredictionService = emotionPredictionService;
     }
 
@@ -91,16 +93,12 @@ public class DiaryService {
 
             Theme theme = diaryDTO.getTheme();
             if (theme == null) {
-                theme = new Theme();
-                theme.setThemeName("default");
-                theme.setDescription("기본 테마");
+                theme = themeRepository.findByThemeName("default") // 또는 기본 테마를 조회해 설정
+                        .orElseThrow(() -> new RuntimeException("기본 테마를 찾을 수 없습니다."));
             }
-            System.out.println(theme.getThemeName());
             diary.setTheme(theme);
 
-
             // 일기 기본정보 저장중
-
 
             // EmotionDTO 리스트를 통해 감정 추가
             List<EmotionDTO> emotions = diaryDTO.getEmotions();
