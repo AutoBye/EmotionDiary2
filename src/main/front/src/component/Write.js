@@ -15,7 +15,7 @@ function Write() {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
-    const defaultTheme = { id: 1, themeName: 'default', description: '기본 테마' };
+    const defaultTheme = { id: 1, themeName: '기본', description: '기본' };
     const [themes, setThemes] = useState([]); // 테마 목록 상태 추가
     const [selectedTheme, setSelectedTheme] = useState(defaultTheme);
 
@@ -27,8 +27,27 @@ function Write() {
     const [stickers, setStickers] = useState([]);
     const [droppedStickers, setDroppedStickers] = useState([]);
 
+    const [User, setUser] = useState(''); // 모달 메시지 상태 추가
+
+    // 세션 체크 함수
+    const checkSession = async () => {
+        try {
+            const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+            if (!response.data || !response.data.username) {
+                throw new Error('로그인이 필요합니다.');
+            }
+        } catch (error) {
+            setModalMessage('로그인이 필요합니다.');
+            setTimeout(() => {
+                navigate('/login'); // 로그인 페이지로 이동
+            }, 1000); // 2초 후에 페이지 이동
+        }
+    };
+
     // 서버에서 스티커 목록과 테마 목록 가져오기
     useEffect(() => {
+        checkSession();
+
         axios.get('http://192.168.123.161:8080/api/stickers', {withCredentials: true})
             .then(response => {
                 setStickers(response.data || []);
@@ -89,7 +108,9 @@ function Write() {
 
 
 
+    const transName = (name) => {
 
+    }
 
 
     const handleThemeSelect = (theme) => {
@@ -97,19 +118,20 @@ function Write() {
     };
 
     const themeStyles = {
-        default: {backgroundColor: 'white'},
-        dark: {backgroundColor: '#333', color: 'white'},
-        nature: {backgroundColor: '#a8e6cf', color: '#3a3a3a'}
+        "기본": {backgroundColor: 'white'},
+        "검정": {backgroundColor: '#333', color: 'white'},
+        "민트": {backgroundColor: '#a8e6cf', color: '#3a3a3a'},
+        "양피지" : { backgroundImage: 'url(/images/parchment.png)', backgroundSize: 'cover', color: '#fff' }
     };
 
     const headThemeStyles = {
-        default: {backgroundColor: 'white'},
-        dark: {backgroundColor: '#333', color: 'white'},
-        nature: {backgroundColor: '#a8e6cf', color: '#3a3a3a'}
+        "기본": {backgroundColor: 'white'},
+        "검정": {backgroundColor: '#333', color: 'white'},
+        "민트": {backgroundColor: '#a8e6cf', color: '#3a3a3a'},
+        "양피지" : {
+
+        }
     };
-
-
-
 
 
     const requiredEmotions = ['기쁨란'];
@@ -127,14 +149,21 @@ function Write() {
         setSelectedMainEmotion(prevEmotion => prevEmotion === emotion ? '' : emotion);
     };
 
+
     const handleSubEmotionClick = (subEmotion) => {
         setSelectedEmotions((prev) => {
             const isAlreadySelected = prev.some(emotion => emotion.subEmotion === subEmotion);
 
+            // 이미 선택된 감정인지 확인
             if (isAlreadySelected) {
-                return prev.filter((emotion) => emotion.subEmotion !== subEmotion);
+                return prev.filter((emotion) => emotion.subEmotion !== subEmotion); // 이미 선택된 감정을 제거
             } else {
-                return [...prev, {mainEmotion: selectedMainEmotion, subEmotion}];
+                // 이미 선택된 감정이 5개 이상이면 더 이상 추가되지 않도록 제한
+                if (prev.length >= 5) {
+                    setError("감정은 최대 5개까지 선택할 수 있습니다.");
+                    return prev; // 새로운 감정을 추가하지 않음
+                }
+                return [...prev, {mainEmotion: selectedMainEmotion, subEmotion}]; // 새로운 감정을 추가
             }
         });
     };
@@ -175,7 +204,7 @@ function Write() {
             content,
             visibility: isPublic,
             emotions: selectedEmotions,
-            theme: selectedTheme || 'default', // 선택된 테마가 없으면 'default'로 설정
+            theme: selectedTheme || '기본', // 선택된 테마가 없으면 'default'로 설정
             stickers: droppedStickers.map(({stickerId, x, y}) => ({
                 sticker: {id: stickerId},
                 positionX: isNaN(parseFloat(x)) ? 0.0 : parseFloat(x),
@@ -203,19 +232,19 @@ function Write() {
 
 
     return (
-        <div className="write-wrapper">
+        <div className="write-wrapper" >
             <div
                 className="write-container"
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 style={{
                     position: 'relative',
-                    ...themeStyles[selectedTheme?.themeName] || themeStyles.default // 선택된 테마 스타일 적용
+                    ...themeStyles[selectedTheme?.themeName] || themeStyles["기본"] // 선택된 테마 스타일 적용
                 }}
             >
                 <h2 className="write-heading"
                     style={{
-                        ...headThemeStyles[selectedTheme?.themeName] || themeStyles.default // 선택된 테마 스타일 적용
+                        ...headThemeStyles[selectedTheme?.themeName] || themeStyles["기본"] // 선택된 테마 스타일 적용
                     }}>오늘 너의 하루는?</h2>
                 <form onSubmit={handleSubmit} className="write-form">
                     <input
@@ -235,26 +264,29 @@ function Write() {
                     />
 
                     <div className="visibility-options">
-                        <label>
+                        <label className={`visibility-option ${isPublic ? 'selected' : ''}`}>
                             <input
                                 type="radio"
                                 name="visibility"
                                 checked={isPublic}
                                 onChange={() => setIsPublic(true)}
+                                id="public"
                             />
+                            <span className="radio-button"></span>
                             공개
                         </label>
-                        <label>
+                        <label className={`visibility-option ${!isPublic ? 'selected' : ''}`}>
                             <input
                                 type="radio"
                                 name="visibility"
                                 checked={!isPublic}
                                 onChange={() => setIsPublic(false)}
+                                id="private"
                             />
+                            <span className="radio-button"></span>
                             비공개
                         </label>
                     </div>
-
                     <div className="emotion-selection">
                         <h3>오늘의 감정란을 담아보세요</h3>
                         <div className="main-emotions">
@@ -262,11 +294,10 @@ function Write() {
                                 <div key={emotion.name} className="main-emotion-category">
                                     <button
                                         type="button"
-                                        key={emotion.name}
-                                        className={`main-emotion ${selectedMainEmotion === emotion.name ? 'active' : ''}`}
+                                        className={`main-emotion ${selectedMainEmotion === emotion.name ? 'active' : ''} ${emotion.className}`}
                                         onClick={() => handleMainEmotionClick(emotion.name)}
                                     >
-                                        <img src={emotion.image} alt={emotion.name} className="emotion-image"/>
+                                    <img src={emotion.image} alt={emotion.name} className="emotion-image"/>
                                         {emotion.name}
                                     </button>
                                 </div>
@@ -282,16 +313,15 @@ function Write() {
                                     className={`sub-emotion ${selectedEmotions.some(emotion => emotion.subEmotion === subEmotion) ? 'selected' : ''}`}
                                     onClick={() => handleSubEmotionClick(subEmotion)}
                                 >
-                                    {subEmotion}
+                                {subEmotion}
                                 </button>
                             ))}
                         </div>
                     </div>
-
+                    {error && <p className="write-message write-error">{error}</p>}
                     <button type="submit" className="write-button">저장</button>
                 </form>
 
-                {error && <p className="write-message write-error">{error}</p>}
                 {message && <p className="write-message write-success">{message}</p>}
 
                 {droppedStickers.map((sticker, index) => (
@@ -300,7 +330,13 @@ function Write() {
                         src={`http://192.168.123.161:8080${sticker.imageUrl}`}
                         alt={sticker.stickerName}
                         className="dropped-sticker"
-                        style={{position: 'absolute', left: sticker.x, top: sticker.y, width: '50px', height: '50px'}}
+                        style={{
+                            position: 'absolute',
+                            left: sticker.x,
+                            top: sticker.y,
+                            width: '50px',   // 원본 크기의 50%
+                            height: '50px'   // 원본 크기의 50%
+                        }} //width: '50px', height: '50px' 크기 변경
                         onContextMenu={(e) => {
                             e.preventDefault();
                             handleStickerDelete(index); // 우클릭 시 삭제
@@ -313,7 +349,7 @@ function Write() {
             </div>
 
             <div className="sticker-selection">
-                <h3>스티커 선택하기:</h3>
+                <h3>스티커</h3>
                 <div className="stickers-list">
                     {stickers.map((sticker) => (
                         <img
@@ -329,7 +365,7 @@ function Write() {
 
                 {/* 테마 선택 섹션 */}
                 <div className="theme-selection">
-                    <h3>테마 선택하기:</h3>
+                    <h3>테마</h3>
                     <div className="themes-list">
                         {themes.map((theme) => (
                             <button

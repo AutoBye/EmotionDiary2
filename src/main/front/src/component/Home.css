@@ -6,19 +6,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'HakgyoansimWoojuR';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'EF_hyunydororong';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-01@1.0/EF_hyunydororong.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
 
 body {
     margin: 0;
@@ -67,7 +54,7 @@ h1 {
     font-family: 'ChosunGu', Arial, sans-serif;
     font-size: 50px;
     font-weight: 600;
-    margin-top: 10px;
+    margin-top: -50px;
 }
 
 /* 작은 소개글 */
@@ -105,7 +92,7 @@ h1 {
 h2 {
     color: #000000;
     font-weight: 900;
-    font-family: 'SUIT-Regular', Arial, sans-serif;
+    font-family: 'ChosunGu', Arial, sans-serif;
 }
 
 .explain-text {
@@ -319,15 +306,23 @@ li {
     height: auto; /* 이미지 비율 유지 */
 }
 
+@font-face {
+    font-family: 'IM_Hyemin-Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2106@1.1/IM_Hyemin-Bold.woff2') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .highlight2-text {
     flex-direction: column; /* 자식 요소들이 수직으로 배치되도록 설정 */
     text-align: center;
     margin-top: 250px;
-    font-family: 'HakgyoansimWoojuR', Arial, sans-serif;
+    font-family: 'IM_Hyemin-Bold', Arial, sans-serif;
     font-size: 50px;
-    font-weight: 600;
+    font-weight: 500;
     color: #000000;
 }
+
 .highlight2-text span {
     display: block; /* 각 줄을 세로로 배열 */
     margin-bottom: 20px; /* 줄 간격 조정 (필요 시 조정) */
@@ -338,7 +333,8 @@ li {
     text-align: center;
     margin-top: 130px;
     font-family: 'ChosunGu', Arial, sans-serif;
-    font-size: 20px;
+    font-size: 26px;
+    font-weight: 100;
     color: #000000;
 }
 

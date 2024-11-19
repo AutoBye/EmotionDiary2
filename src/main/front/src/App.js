@@ -8,12 +8,10 @@ import Header from './component/Header';
 import MyDiary from './component/MyDiary';
 import DiaryDetail  from "./component/DiaryDetail";
 import PublicDiary from "./component/PublicDiary";
-
 import axios from "axios";
 
 function App() {
     const [user, setUser] = useState(null);
-
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
     // 페이지 로드 시 서버 세션을 확인하고 사용자 정보를 설정
@@ -69,7 +67,7 @@ function App() {
                 <Route path="/login" element={<Login onLogin={handleLogin} />} />
                 <Route path="/write" element={<Write />} />
                 <Route path="/my-diary" element={<MyDiary />} />
-                <Route path="/diaries/:id" element={<DiaryDetail />} />
+                <Route path="/diaries/:id" element={<DiaryDetail username={user}/>} />
                 <Route path="/public-diary" element={<PublicDiary />} />
             </Routes>
         </Router>

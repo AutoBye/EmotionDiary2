@@ -162,6 +162,12 @@ public class DiaryService {
 
         List<Diary> diaries = diaryRepository.findByUser(user);
 
+        // 모든 일기의 감정 분석 데이터를 미리 로드
+        Map<Long, List<MoodAnalysis>> moodAnalysisMap = moodAnalysisRepository
+                .findAllByDiaryIds(diaries.stream().map(Diary::getId).toList())
+                .stream()
+                .collect(Collectors.groupingBy(MoodAnalysis::getDiaryId));
+
         // DTO 로 변환하여 반환
         List<DiaryDTO> diaryDTOList = diaries.stream()
                 .map(diary -> {
@@ -182,6 +188,10 @@ public class DiaryService {
                                     emotion.getCreatedAt()
                             ))
                             .toList());
+                    // 감정 분석 데이터를 설정
+                    List<MoodAnalysis> moodAnalyses = moodAnalysisMap.getOrDefault(diary.getId(), List.of());
+                    Map<String, Map<String, Object>> emotionCountMap = groupMoodAnalysis(moodAnalyses);
+                    dto.setEmotionCounts(emotionCountMap);
                     return dto;
                 })
                 .toList();
@@ -253,7 +263,7 @@ public class DiaryService {
         List<UserStickerCustomizationDTO> stickers = convertStickerCustomizationsToDTO(diary);
 
         // 감정 분석 데이터 조회 및 변환
-        Map<String, Map<String, Object>> emotionCountMap = groupMoodAnalysis(moodAnalysisRepository.findByDiaryId(diary.getId()));
+        Map<String, Map<String, Object>> emotionCountMap = groupMoodAnalysis(moodAnalysisRepository.findByDiary_Id(diary.getId()));
 
         // 감정 정보 변환
         List<EmotionDTO> emotions = convertEmotionsToDTO(diary);
@@ -337,7 +347,6 @@ public class DiaryService {
 
         return ResponseEntity.ok(String.valueOf(diary.getLikeCount()));
     }
-
 
     private List<UserStickerCustomizationDTO> convertStickerCustomizationsToDTO(Diary diary) {
         return diary.getUserStickerCustomizations().stream()

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import '../component/Style.css';
 import Modal from './diarymodaltest'; // 모달 컴포넌트 가져오기
@@ -10,13 +10,16 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 // 차트 구성 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function DiaryDetail() {
+function DiaryDetail({ username }) {
     const { id } = useParams(); // URL에서 다이어리 ID 가져오기
     const [diary, setDiary] = useState(null); // 다이어리 상세 데이터 저장
     const [error, setError] = useState('');
     const [likeCount, setLikeCount] = useState(0); // 공감 수 저장
     const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태
     const [feedback, setFeedback] = useState(''); // 피드백 상태 추가
+    const navigate = useNavigate();
+
+
     // 초기 상태를 감정 항목별로 0으로 설정
     const [emotionData, setEmotionData] = useState({
         기쁨: { count: 0, subcategories: [] },
@@ -27,49 +30,85 @@ function DiaryDetail() {
         상처: { count: 0, subcategories: [] }
     });
 
+
+
     // 테마 스타일 정의
     const themeStyles = {
-        default: { backgroundColor: 'white', color: 'black' },
-        dark: { backgroundColor: '#333', color: 'white' },
-        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
+        "기본": { backgroundColor: 'white', color: 'black' },
+        "검정": { backgroundColor: '#333', color: 'white' },
+        "민트": { backgroundColor: '#a8e6cf', color: '#3a3a3a' },
+        "양피지" : {
+            backgroundImage: 'url(/images/parchment.png)',
+            // backgroundSize: 'contain', // 이미지 비율 유지
+            // backgroundRepeat: 'no-repeat',
+            // backgroundPosition: 'center' // div 가운데 정렬 }
+        }
+    };
+
+    const headThemeStyles = {
+        "기본": {backgroundColor: 'white'},
+        "검정": {backgroundColor: '#333', color: 'white'},
+        "민트": {backgroundColor: '#a8e6cf', color: '#3a3a3a'},
+        "양피지" : {
+            background: "none"
+        }
     };
 
     useEffect(() => {
-        axios.get(`http://192.168.123.161:8080/diaries/${id}`, { withCredentials: true })
-            .then((response) => {
-                setDiary(response.data);
-                setLikeCount(response.data.likeCount);
-                // console.log("스티커 데이터:", response.data.stickers); // 스티커 데이터 확인
-                // 나머지 로직...
+        // 세션 체크 후 나머지 코드 실행
+        const initialize = async () => {
+            const isSessionValid = await checkSession();
+            if (!isSessionValid) return; // 세션이 유효하지 않으면 나머지 코드 실행 중단
 
+            axios.get(`http://192.168.123.161:8080/diaries/${id}`, { withCredentials: true })
+                .then((response) => {
+                    setDiary(response.data);
+                    setLikeCount(response.data.likeCount);
 
-                const emotionCounts = response.data.emotionCounts || {};
-                const updatedEmotionData = { ...emotionData };
-                Object.keys(emotionCounts).forEach(emotion => {
-                    updatedEmotionData[emotion].count = emotionCounts[emotion].count;
-                    updatedEmotionData[emotion].subcategories = emotionCounts[emotion].subCategories;
+                    const emotionCounts = response.data.emotionCounts || {};
+                    const updatedEmotionData = { ...emotionData };
+                    Object.keys(emotionCounts).forEach(emotion => {
+                        updatedEmotionData[emotion].count = emotionCounts[emotion].count;
+                        updatedEmotionData[emotion].subcategories = emotionCounts[emotion].subCategories;
+                    });
+                    setEmotionData(updatedEmotionData);
+
+                    const userEmotions = response.data.emotions;
+                    const diaryId = id;
+
+                    axios.post('http://192.168.123.161:8080/emotion/analyze', { userEmotions, emotionCounts, diaryId })
+                        .then(feedbackResponse => setFeedback(feedbackResponse.data.feedback))
+                        .catch(error => console.error("피드백 요청 실패:", error));
+                })
+                .catch((error) => {
+                    console.error('일기 상세 데이터를 불러오는 데 실패했습니다:', error);
+                    const errorMessage = getErrorMessage(error);
+                    console.error("일기 상세 데이터를 불러오는 데 실패했습니다:", errorMessage);
+                    setError(errorMessage);
+                    setModalMessage(errorMessage);
                 });
-                setEmotionData(updatedEmotionData);
+        };
 
-
-                const userEmotions = response.data.emotions;
-
-                const diaryId = id;
-                // console.log(diaryId);
-                // 감정 분석 피드백 요청
-                axios.post('http://192.168.123.161:8080/emotion/analyze', { userEmotions, emotionCounts, diaryId})
-                    .then(feedbackResponse => setFeedback(feedbackResponse.data.feedback))
-                    .catch(error => console.error("피드백 요청 실패:", error));
-            })
-            .catch((error) => {
-                console.error('일기 상세 데이터를 불러오는 데 실패했습니다:', error);
-                setError("일기 상세 데이터를 불러오는 데 실패했습니다.");
-                const errorMessage = getErrorMessage(error);
-                console.error("일기 상세 데이터를 불러오는 데 실패했습니다:", errorMessage);
-                setError(errorMessage);
-                setModalMessage(errorMessage);
-            });
+        initialize();
     }, [id]);
+
+// 수정된 checkSession 함수
+    const checkSession = async () => {
+        try {
+            const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+            if (!response.data || !response.data.username) {
+                setModalMessage('로그인이 필요합니다.'); // 모달 메시지 설정
+                throw new Error('로그인이 필요합니다.');
+            }
+            return true;
+        } catch (error) {
+            setModalMessage('로그인이 필요합니다.'); // 모달 메시지 설정
+            setTimeout(() => {
+                navigate('/login'); // 로그인 페이지로 이동
+            }, 2000);
+            return false;
+        }
+    };
 
     const handleLikeClick = () => {
         axios.post(`http://192.168.123.161:8080/diaries/${id}/like`, {}, { withCredentials: true })
@@ -122,6 +161,8 @@ function DiaryDetail() {
         }
     };
 
+
+
     // 오류 메시지 추출 함수
     const getErrorMessage = (error) => {
         if (error.response && error.response.data) {
@@ -139,11 +180,7 @@ function DiaryDetail() {
         return <p>로딩 중...</p>;
     }
 
-    const headThemeStyles = {
-        default: { backgroundColor: 'white' },
-        dark: { backgroundColor: '#333', color: 'white' },
-        nature: { backgroundColor: '#a8e6cf', color: '#3a3a3a' }
-    };
+
 
     return (
         <div className="write-wrapper">
@@ -153,18 +190,16 @@ function DiaryDetail() {
                 style={{
                     position: 'relative',
                     alignContent: "center",
-                    ...themeStyles[diary.theme?.themeName] || themeStyles.default
+                    ...themeStyles[diary.theme?.themeName] || themeStyles["기본"]
                 }}
             >
                 <h2 className="write-heading"
                     style={{
-                        ...headThemeStyles[diary.theme?.themeName] || themeStyles.default
+                        ...headThemeStyles[diary.theme?.themeName] || themeStyles["기본"]
                     }}
                 >{diary.title || '제목 없음'}</h2>
                 <div className="write-content"
-                     style={{
-
-                     }}>
+                     style={{}}>
                     <p className="diary-content">{diary.content}</p>
                     <p>공개 여부: {diary.isPublic ? '공개' : '비공개'}</p>
                     <p>감정: {diary.emotions && diary.emotions.map(emotion => `${emotion.mainEmotion} (${emotion.subEmotion})`).join(', ')}</p>
@@ -189,11 +224,13 @@ function DiaryDetail() {
                                         position: 'absolute',
                                         top: `${sticker.positionY}px`,
                                         left: `${sticker.positionX}px`,
-                                        width: `${sticker.scale * 50}px`,
-                                        height: `${sticker.scale * 50}px`,
+                                        width: '50px',   // 원본 크기의 50%
+                                        height: '50px',   // 원본 크기의 50%
                                         transform: `rotate(${sticker.rotation}deg)`,
                                         pointerEvents: 'none'
                                     }}
+                                    // width: `${sticker.scale * 50}px`,
+                                    //height: `${sticker.scale * 50}px`,
                                 />
                             );
                         })}
@@ -220,18 +257,19 @@ function DiaryDetail() {
                     </button>
                 )}
 
-                {/* 모달 표시 */}
-                {modalMessage && <Modal message={modalMessage} onClose={closeModal}/>}
             </div>
             {/* 감정 분석 그래프 */}
-            <div style={{flex: 1, padding: '20px', maxWidth: '500px', height: '300px'}}>
-                <Doughnut data={chartData} options={chartOptions}/>
-                <div className="feedback-section" style={{marginTop: '70px',marginRight: '200px', textAlign: 'center'}}>
-                    <h3>감정 분석 피드백</h3>
-                    <p>{feedback}</p>
+            {diary.author === username && (
+                <div style={{flex: 1, padding: '20px', maxWidth: '500px', height: '300px'}}>
+                    <Doughnut data={chartData} options={chartOptions}/>
+                    <div className="feedback-section" style={{marginTop: '70px', marginRight: '200px', textAlign: 'center'}}>
+                        <h3>감정 분석 피드백</h3>
+                        <p>{feedback}</p>
+                    </div>
                 </div>
-            </div>
-
+            )}
+            {/* 모달 표시 */}
+            {modalMessage && <Modal message={modalMessage} onClose={closeModal}/>}
         </div>
     );
 }

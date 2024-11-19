@@ -75,7 +75,7 @@ function Home() {
                 {/* 섹션으로 이동하는 버튼 */}
                 <div className="sticky-wrapper">
                     <div className="button-container">
-                        <button onClick={() => scrollToSection(section1Ref, -80)}>소개</button>
+                        <button onClick={() => scrollToSection(section1Ref, -180)}>소개</button>
                         {/* 첫 섹션 오프셋 -80 적용 */}
                         <button onClick={() => scrollToSection(section2Ref)}>기능소개</button>
                         <button onClick={() => scrollToSection(section3Ref)}>좋은점</button>
@@ -97,9 +97,8 @@ function Home() {
                                     <img src="/images/Banner1.png" alt="Banner1" className="banner1-image"/>
                                     <div className="text-container">
                                         <div className="highlight2-text">
-                                            <span>'감 정 란'  을 골 라</span>
-                                            <span>오 늘 느 낀 감 정 에</span>
-                                            <span>이 름 을 붙 여 보 세 요</span>
+                                            <span>'감 정 란'을 골라 오늘 느낀 감정에</span>
+                                            <span>이름을 붙여보세요</span>
                                         </div>
                                         <p className="highlight3-text">
                                             모호했던 감정들이 좀 더 분명해지고 기분이 한결 개운해질거에요 !

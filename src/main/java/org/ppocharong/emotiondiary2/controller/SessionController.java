@@ -16,7 +16,7 @@ public class SessionController {
     @GetMapping("/check-session")
     public ResponseEntity<Map<String, String>> checkSession(HttpSession session) {
         String username = (String) session.getAttribute("user");
-
+        System.out.println(username);
         if (username != null) {
             return ResponseEntity.ok(Collections.singletonMap("username", username));
         } else {

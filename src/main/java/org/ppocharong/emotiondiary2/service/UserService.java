@@ -120,6 +120,7 @@ public class UserService {
 
     /** 로그아웃 처리 메서드 */
     public String logout(HttpSession session) {
+        session.removeAttribute("user");
         session.invalidate();
         return "redirect:/";
     }

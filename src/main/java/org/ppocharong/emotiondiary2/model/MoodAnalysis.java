@@ -38,4 +38,8 @@ public class MoodAnalysis {
     @Column(name = "analysis_date")
     private Instant analysisDate;
 
+    // 추가: Diary ID 반환 메서드
+    public Long getDiaryId() {
+        return diary != null ? diary.getId() : null;
+    }
 }
