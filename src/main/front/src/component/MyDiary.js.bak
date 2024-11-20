@@ -38,7 +38,7 @@ function MyDiary() {
     // 세션 체크 함수
     const checkSession = async () => {
         try {
-            const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+            const response = await axios.get('https://3453-203-230-86-251.ngrok-free.app/check-session', { withCredentials: true });
             if (!response.data || !response.data.username) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -54,14 +54,14 @@ function MyDiary() {
         const initialize = async () => {
             try {
                 // 세션 체크
-                const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+                const response = await axios.get('https://3453-203-230-86-251.ngrok-free.app/check-session', { withCredentials: true });
                 if (!response.data || !response.data.username) {
                     setModalMessage('로그인이 필요합니다.');
                     setTimeout(() => navigate('/login'), 2000); // 2초 후 로그인 페이지로 이동
                     return; // 이후 코드 실행 중단
                 }
                 // 세션이 유효하면 diaries 데이터를 가져옵니다.
-                const diariesResponse = await axios.get('http://192.168.123.161:8080/diaries/list', { withCredentials: true });
+                const diariesResponse = await axios.get('https://3453-203-230-86-251.ngrok-free.app/diaries/list', { withCredentials: true });
                 if (Array.isArray(diariesResponse.data)) {
                     setDiaries(diariesResponse.data);
                     console.log('다이어리 데이터:', diariesResponse.data);
@@ -80,7 +80,7 @@ function MyDiary() {
 
     // 삭제 핸들러 함수
     const handleDelete = (diaryId) => {
-        axios.delete(`http://192.168.123.161:8080/diaries/${diaryId}`, { withCredentials: true })
+        axios.delete(`https://3453-203-230-86-251.ngrok-free.app/diaries/${diaryId}`, { withCredentials: true })
             .then(() => {
                 alert('일기가 성공적으로 삭제되었습니다.');
                 setDiaries(prevDiaries => prevDiaries.filter(diary => diary.id !== diaryId));

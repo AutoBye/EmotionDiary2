@@ -1,6 +1,7 @@
 // 작성자 - 김형섭 2024-11-04
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../component/PublicDiary.css';
 import '../component/Style.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,8 +13,10 @@ function MyDiary() {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const [itemsPerPage] = useState(10); // 페이지당 표시할 항목 수
 
+    // https://3453-203-230-86-251.ngrok-free.app
+    //https://3453-203-230-86-251.ngrok-free.app/diaries/public-list
     useEffect(() => {
-        axios.get('http://192.168.123.161:8080/diaries/public-list', { withCredentials: true })
+        axios.get('/diaries/public-list', { withCredentials: true })
             .then((response) => {
                 if (Array.isArray(response.data)) {
                     setDiaries(response.data);
@@ -72,22 +75,20 @@ function MyDiary() {
 
     return (
         <div className="public-diary-container">
-            <h2>공개된 일기</h2>
-
             {/* 정렬 버튼 */}
             <div className="sort-buttons" style={{ marginBottom: '20px', textAlign: 'right' }}>
-                <button onClick={() => handleSort('title')} style={{ margin: '0 5px' }}>
-                    제목 {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
-                </button>
+                {/*<button onClick={() => handleSort('title')} style={{ margin: '0 5px' }}>*/}
+                {/*    제목 {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '▲' : '▼')}*/}
+                {/*</button>*/}
                 <button onClick={() => handleSort('createdAt')} style={{ margin: '0 5px' }}>
                     작성일 {sortConfig.key === 'createdAt' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
                 </button>
                 <button onClick={() => handleSort('likeCount')} style={{ margin: '0 5px' }}>
                     공감 수 {sortConfig.key === 'likeCount' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
                 </button>
-                <button onClick={() => handleSort('author')} style={{ margin: '0 5px' }}>
-                    작성자 {sortConfig.key === 'author' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
-                </button>
+                {/*<button onClick={() => handleSort('author')} style={{ margin: '0 5px' }}>*/}
+                {/*    작성자 {sortConfig.key === 'author' && (sortConfig.direction === 'asc' ? '▲' : '▼')}*/}
+                {/*</button>*/}
             </div>
 
             {/* 다이어리 리스트 */}
@@ -95,14 +96,14 @@ function MyDiary() {
                 <thead>
                 <tr style={{backgroundColor: '#f4f4f4', textAlign: 'left'}}>
                     <th style={{padding: '10px'}}>제목</th>
-                    <th style={{padding: '10px'}}>작성일</th>
+                    <th style={{padding: '10px', textAlign: 'center'}}>작성일</th>
                     <th style={{padding: '10px', textAlign: 'center'}}>공감 수</th>
                     <th style={{padding: '10px'}}>작성자</th>
                 </tr>
                 </thead>
                 <tbody>
                 {currentDiaries.length > 0 ? (
-                    currentDiaries.map((diary) => (
+                    currentDiaries.reverse().map((diary) => (
                         <tr
                             key={diary.id}
                             style={{
@@ -114,12 +115,12 @@ function MyDiary() {
                             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f8ff')}
                             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                         >
-                            <td style={{padding: '10px', color: '#007bff', textDecoration: 'underline'}}>
+                            <td  style={{padding: '10px'}}>
                                 {diary.title || '제목 없음'}
                             </td>
-                            <td style={{padding: '10px'}}>{new Date(diary.createdAt).toLocaleDateString()}</td>
-                            <td style={{padding: '10px', textAlign: 'center'}}>{diary.likeCount}</td>
-                            <td style={{padding: '10px'}}>{diary.author || '익명'}</td>
+                            <td style={{padding: '10px', textAlign: 'center'}}>{new Date(diary.createdAt).toLocaleDateString()}</td>
+                            <td  style={{padding: '10px', textAlign: 'center'}}>{diary.likeCount}</td>
+                            <td  style={{padding: '10px',  textAlign: 'center'}}>{diary.author || '익명'}</td>
                         </tr>
                     ))
                 ) : (

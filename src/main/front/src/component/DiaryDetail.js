@@ -60,7 +60,7 @@ function DiaryDetail({ username }) {
             const isSessionValid = await checkSession();
             if (!isSessionValid) return; // 세션이 유효하지 않으면 나머지 코드 실행 중단
 
-            axios.get(`http://192.168.123.161:8080/diaries/${id}`, { withCredentials: true })
+            axios.get(`/diaries/${id}`, { withCredentials: true })
                 .then((response) => {
                     setDiary(response.data);
                     setLikeCount(response.data.likeCount);
@@ -76,7 +76,7 @@ function DiaryDetail({ username }) {
                     const userEmotions = response.data.emotions;
                     const diaryId = id;
 
-                    axios.post('http://192.168.123.161:8080/emotion/analyze', { userEmotions, emotionCounts, diaryId })
+                    axios.post('/emotion/analyze', { userEmotions, emotionCounts, diaryId })
                         .then(feedbackResponse => setFeedback(feedbackResponse.data.feedback))
                         .catch(error => console.error("피드백 요청 실패:", error));
                 })
@@ -95,7 +95,7 @@ function DiaryDetail({ username }) {
 // 수정된 checkSession 함수
     const checkSession = async () => {
         try {
-            const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+            const response = await axios.get('/check-session', { withCredentials: true });
             if (!response.data || !response.data.username) {
                 setModalMessage('로그인이 필요합니다.'); // 모달 메시지 설정
                 throw new Error('로그인이 필요합니다.');
@@ -111,7 +111,7 @@ function DiaryDetail({ username }) {
     };
 
     const handleLikeClick = () => {
-        axios.post(`http://192.168.123.161:8080/diaries/${id}/like`, {}, { withCredentials: true })
+        axios.post(`/diaries/${id}/like`, {}, { withCredentials: true })
             .then(() => {
                 setLikeCount((prevCount) => prevCount + 1); // 공감 수 증가
             })
@@ -217,7 +217,7 @@ function DiaryDetail({ username }) {
                             return (
                                 <img
                                     key={index}
-                                    src={`http://192.168.123.161:8080${sticker.sticker.imageUrl}`}
+                                    src={`${sticker.sticker.imageUrl}`}
                                     alt={`스티커 ${sticker.stickerId}`}
                                     className="dropped-sticker"
                                     style={{

@@ -15,7 +15,9 @@ function Login({onLogin: onLogin}) {
         e.preventDefault();
         setError('');
 
-        axios.post('http://192.168.123.161:8080/login', { email, password }, { withCredentials: true })
+        // https://3453-203-230-86-251.ngrok-free.app
+        // https://3453-203-230-86-251.ngrok-free.app/login
+        axios.post('/login', { email, password }, { withCredentials: true })
             .then((response) => {
                 if (response.data.username && response.data) {
                     onLogin(response.data.username);

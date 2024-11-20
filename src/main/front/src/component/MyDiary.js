@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../component/Style.css';
+import '../component/MyDiary.css';
 import { useNavigate } from 'react-router-dom';
 import {
     Chart as ChartJS,
@@ -37,10 +37,12 @@ function MyDiary() {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const [itemsPerPage] = useState(10); // 페이지당 표시할 항목 수
 
+    // https://3453-203-230-86-251.ngrok-free.app
+    // https://3453-203-230-86-251.ngrok-free.app
     // 세션 체크 함수
     const checkSession = async () => {
         try {
-            const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+            const response = await axios.get('/check-session', { withCredentials: true });
             if (!response.data || !response.data.username) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -56,14 +58,14 @@ function MyDiary() {
         const initialize = async () => {
             try {
                 // 세션 체크
-                const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+                const response = await axios.get('/check-session', { withCredentials: true });
                 if (!response.data || !response.data.username) {
                     setModalMessage('로그인이 필요합니다.');
                     setTimeout(() => navigate('/login'), 2000); // 2초 후 로그인 페이지로 이동
                     return; // 이후 코드 실행 중단
                 }
                 // 세션이 유효하면 diaries 데이터를 가져옵니다.
-                const diariesResponse = await axios.get('http://192.168.123.161:8080/diaries/list', { withCredentials: true });
+                const diariesResponse = await axios.get('/diaries/list', { withCredentials: true });
                 if (Array.isArray(diariesResponse.data)) {
                     setDiaries(diariesResponse.data);
                     console.log('다이어리 데이터:', diariesResponse.data);
@@ -82,7 +84,7 @@ function MyDiary() {
 
     // 삭제 핸들러 함수
     const handleDelete = (diaryId) => {
-        axios.delete(`http://192.168.123.161:8080/diaries/${diaryId}`, { withCredentials: true })
+        axios.delete(`/diaries/${diaryId}`, { withCredentials: true })
             .then(() => {
                 alert('일기가 성공적으로 삭제되었습니다.');
                 setDiaries(prevDiaries => prevDiaries.filter(diary => diary.id !== diaryId));
@@ -99,6 +101,7 @@ function MyDiary() {
     }
 
 
+    //TODO - 부정점수계산으로 바꾸기
     const graphData = {
         labels: diaries.map(diary => new Date(diary.createdAt).toLocaleDateString()), // X축: 작성 날짜
         datasets: [
@@ -153,6 +156,7 @@ function MyDiary() {
         }
     };
 
+    // 피드백 안쓸듯
     const generateFeedback = () => {
         return diaries.map(diary => {
             if (!diary.emotions || !diary.emotionCounts) return '데이터가 충분하지 않습니다.';
@@ -221,88 +225,76 @@ function MyDiary() {
 
     return (
         <div className="my-diary-container">
-            <h2>내 일기</h2>
-            {/* 정렬 버튼 */}
-            <div className="sort-buttons" style={{marginBottom: '20px', textAlign: 'right'}}>
-                <button onClick={() => handleSort('title')} style={{margin: '0 5px'}}>
-                    제목 순 {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
-                </button>
-                <button onClick={() => handleSort('createdAt')} style={{margin: '0 5px'}}>
+            {/* 정렬 버튼을 content-container 내에서 diary-list 위로 이동 */}
+            <div className="sort-buttons">
+                {/*<button onClick={() => navigate('/write')}>일기 쓰기</button>*/}
+                <button onClick={() => handleSort('createdAt')}
+                        className={sortConfig.key === 'createdAt' ? 'active' : ''}>
                     작성일 순 {sortConfig.key === 'createdAt' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
                 </button>
-                <button onClick={() => handleSort('likeCount')} style={{margin: '0 5px'}}>
+                <button onClick={() => handleSort('likeCount')}
+                        className={sortConfig.key === 'likeCount' ? 'active' : ''}>
                     공감 수 순 {sortConfig.key === 'likeCount' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
                 </button>
             </div>
 
-            {/* 다이어리 리스트 테이블 */}
-            <table className="diary-table" style={{width: '100%', borderCollapse: 'collapse', marginBottom: '20px'}}>
-                <thead>
-                <tr style={{backgroundColor: '#f4f4f4', textAlign: 'left'}}>
-                    <th style={{padding: '10px'}}>제목</th>
-                    <th style={{padding: '10px'}}>작성일</th>
-                    <th style={{padding: '10px', textAlign: 'center'}}>공감 수</th>
-                </tr>
-                </thead>
-                <tbody>
-                {currentDiaries.length > 0 ? (
-                    currentDiaries.map((diary) => (
-                        <tr
-                            key={diary.id}
-                            style={{
-                                borderBottom: '1px solid #ddd',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.3s',
-                            }}
-                            onClick={() => navigate(`/diaries/${diary.id}`)} // 제목 클릭 시 이동
-                        >
-                            <td style={{padding: '10px', color: '#ea7824', textDecoration: 'underline'}}>
-                                {diary.title || '제목 없음'}
-                            </td>
-                            <td style={{padding: '10px'}}>{new Date(diary.createdAt).toLocaleDateString()}</td>
-                            <td style={{padding: '10px', textAlign: 'center'}}>{diary.likeCount}</td>
+            {/* 다이어리 목록과 그래프 */}
+            <div className="content-container">
+                {/* 다이어리 리스트 */}
+                <div className="diary-list">
+                    <table className="diary-table">
+                        <thead>
+                        <tr>
+                            <th>제목</th>
+                            <th>공개 여부</th>
+                            <th>작성일</th>
+                            <th>공감</th>
                         </tr>
-                    ))
-                ) : (
-                    <tr>
-                        <td colSpan="3" style={{textAlign: 'center', padding: '20px'}}>
-                            저장된 일기가 없습니다.
-                        </td>
-                    </tr>
-                )}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                        {currentDiaries.length > 0 ? (
+                            currentDiaries.reverse().map((diary) => (
+                                <tr key={diary.id} onClick={() => navigate(`/diaries/${diary.id}`)}
+                                    className="diary-row">
+                                    <td className="diary-title">{diary.title || '제목 없음'}</td>
+                                    <td style={{padding: '10px', textAlign: 'center'}}>{diary.visibility ? '공개' : '비공개'}</td>
+                                    <td style={{padding: '10px', textAlign: 'center'}}>{new Date(diary.createdAt).toLocaleDateString()}</td>
+                                    <td className="like-count">{diary.likeCount}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="3" className="empty-message">저장된 일기가 없습니다.</td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                    {/* 페이지네이션 */}
+                    <div className="pagination">
+                        {Array.from({length: totalPages}, (_, index) => index + 1).map((pageNumber) => (
+                            <button
+                                key={pageNumber}
+                                onClick={() => handlePageChange(pageNumber)}
+                                className={currentPage === pageNumber ? 'active-page' : ''}
+                            >
+                                {pageNumber}
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
-            {/* 페이지네이션 */}
-            <div className="pagination" style={{textAlign: 'center', margin: '20px 0'}}>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                    <button
-                        key={pageNumber}
-                        onClick={() => handlePageChange(pageNumber)}
-                        style={{
-                            padding: '5px 10px',
-                            margin: '0 5px',
-                            backgroundColor: currentPage === pageNumber ? '#ea7824' : '#fff',
-                            color: currentPage === pageNumber ? '#fff' : 'black',
-                            border: '1px solid #ea7824',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        {pageNumber}
-                    </button>
-                ))}
+                {/* 그래프 */}
+                <div className="graph-container">
+                    <Line data={graphData} options={graphOptions}/>
+                    <p>나의 감정 변화</p>
+                    <ul>
+                        {/*{feedbackList.map((feedback, index) => (*/}
+                        {/*    <li key={index}>{feedback}</li>*/}
+                        {/*))}*/}
+                    </ul>
+                </div>
             </div>
-            {/* 그래프 출력 */}
-            <div className="graph-container" style={{marginBottom: '50px'}}>
-                <Line data={graphData} options={graphOptions}/>
-                <h3>분석 결과</h3>
-                <h7>최근 일기들의 감정 변화를 보여줍니다.</h7>
-                <ul>
-                    {feedbackList.map((feedback, index) => (
-                        <li key={index}>{feedback}</li>
-                    ))}
-                </ul>
-            </div>
+
             {/* 모달 표시 */}
             {modalMessage && <Modal message={modalMessage} onClose={closeModal}/>}
         </div>

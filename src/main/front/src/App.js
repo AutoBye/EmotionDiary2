@@ -15,8 +15,12 @@ function App() {
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
     // 페이지 로드 시 서버 세션을 확인하고 사용자 정보를 설정
+    //https://3453-203-230-86-251.ngrok-free.app
+    //https://3453-203-230-86-251.ngrok-free.app
     useEffect(() => {
-        axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true })
+        axios.get('/check-session', {
+            withCredentials: true,
+        })
             .then((response) => {
                 if (response.data && response.data.username) {
                     setUser(response.data.username);
@@ -40,7 +44,7 @@ function App() {
 
     const handleLogout = () => {
         // 로그아웃 요청
-        axios.get('http://192.168.123.161:8080/logout', { withCredentials: true })
+        axios.get('/logout', { withCredentials: true })
             .then(() => {
                 setUser(null);
                 console.log('로그아웃 성공');

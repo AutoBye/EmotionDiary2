@@ -1,340 +1,354 @@
-
+/* 한글 폰트 ChosunGu를 사용하기 위한 폰트 페이스 정의 */
 @font-face {
-    font-family: 'ChosunGu';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+    font-family: 'ChosunGu'; /* 폰트 이름 설정 */
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); /* 폰트 파일 경로 및 형식 */
+    font-weight: normal; /* 기본 글자 굵기 */
+    font-style: normal; /* 기본 글자 스타일 */
 }
 
-
+/* 웹 페이지의 기본 스타일을 설정 */
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #ffffff;
+    margin: 0; /* 페이지 외부 여백 제거 */
+    padding: 0; /* 페이지 내부 여백 제거 */
+    background-color: #ffffff; /* 배경색 흰색으로 설정 */
 }
 
-/* Main container */
+/* 메인 컨테이너의 스타일 설정 */
 main {
-    padding: 20px;
-    flex-direction: column;
-    align-items: center;
-    color: #333;
+    padding: 20px; /* 내부 여백 설정 */
+    flex-direction: column; /* 내부 요소들을 수직으로 배열 */
+    align-items: center; /* 요소들을 가운데 정렬 */
+    color: #333; /* 텍스트 색상 설정 */
 }
 
-/* Section style */
+/* 섹션 스타일 */
 section {
-    width: 100%;
-    margin: 500px 0; /* 섹션 간 간격을 넓히기 위해 상하 여백을 100px로 설정 */
-    padding: 20px;
-    text-align: center;
+    width: 100%; /* 섹션의 너비를 화면 전체로 설정 */
+    margin: 500px 0; /* 위아래 여백 설정 */
+    padding: 20px; /* 내부 여백 설정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
 }
 
+/* 부가 텍스트 스타일 설정 */
 .subtext {
-    display: block;
-    margin-top: 10px;
+    display: block; /* 블록 요소로 설정 */
+    margin-top: 10px; /* 위쪽 여백 추가 */
 }
 
-
+/* 첫 번째 섹션의 추가 스타일 */
 .section-one {
-    margin-top: 150px; /* 원하는 값으로 상단 여백 조정 */
-    padding-top: 20px; /* 살짝 더 내리는 효과 */
+    margin-top: 150px; /* 상단 여백 설정 */
+    padding-top: 20px; /* 추가 상단 여백 */
 }
 
+/* 이미지 컨테이너 스타일 */
 .image-container {
-    margin-top: -60px; /* 이 값을 조정 */
+    margin-top: -60px; /* 위쪽 간격을 음수로 설정하여 위치 조정 */
 }
+
+/* 텍스트 컨테이너 스타일 */
 .text-container {
-    margin-top: -100px; /* 이 값을 조정 */
+    margin-top: -100px; /* 위쪽 간격을 음수로 설정하여 위치 조정 */
 }
 
-/* 큰소개글 */
+/* 큰 소개글 스타일 */
 h1 {
-    text-align: center;
-    color: #000000;
-    font-family: 'ChosunGu', Arial, sans-serif;
-    font-size: 50px;
-    font-weight: 600;
-    margin-top: -50px;
+    text-align: center; /* 텍스트를 중앙 정렬 */
+    color: #000000; /* 텍스트 색상 검정 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 50px; /* 글자 크기 */
+    font-weight: 600; /* 글자 두께 설정 */
+    margin-top: -50px; /* 위쪽 간격을 음수로 설정하여 위치 조정 */
 }
 
-/* 작은 소개글 */
+/* 작은 소개글 스타일 */
 .highlight-text {
-    color: #000000;
-    font-family: 'ChosunGu', Arial, sans-serif;
-    margin-top: -10px;
-    font-weight: 300;
-    line-height: 1.6;
-    font-size: 23px;
-    margin-bottom: 100px;
+    color: #000000; /* 텍스트 색상 검정 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    margin-top: -10px; /* 위쪽 간격을 음수로 설정 */
+    font-weight: 300; /* 얇은 글자 두께 */
+    line-height: 1.6; /* 줄 간격 설정 */
+    font-size: 23px; /* 글자 크기 설정 */
+    margin-bottom: 100px; /* 아래쪽 간격 설정 */
 }
 
-/* Fade-in 애니메이션 정의 */
+/* 페이드-인 애니메이션 정의 */
 @keyframes fade-in {
     from {
-        opacity: 0;
-        transform: translateY(20px);
+        opacity: 0; /* 초기 투명도 설정 */
+        transform: translateY(20px); /* 아래에서 위로 이동 시작 */
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1; /* 최종 투명도 설정 */
+        transform: translateY(0); /* 원래 위치로 이동 */
     }
 }
 
+/* 페이드-인 애니메이션 적용 */
 .fade-in {
-    opacity: 0;
-    animation: fade-in 1s ease forwards;
+    opacity: 0; /* 초기 투명도 설정 */
+    animation: fade-in 1s ease forwards; /* 애니메이션 1초 동안 진행 */
 }
 
+/* 페이드-인 애니메이션 후 상태 */
 .fade-in.visible {
-    opacity: 1;
+    opacity: 1; /* 투명도 완전하게 보이도록 설정 */
 }
 
+/* 작은 제목 스타일 */
 h2 {
-    color: #000000;
-    font-weight: 900;
-    font-family: 'ChosunGu', Arial, sans-serif;
+    color: #000000; /* 텍스트 색상 검정 */
+    font-weight: 900; /* 글자 두께를 매우 두껍게 설정 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
 }
 
+/* 설명 텍스트 스타일 */
 .explain-text {
-    color: #6e6c6c;
-    font-family: 'ChosunGu', Arial, sans-serif;
-    margin-top: 30px;
-    font-weight: 300;
-    line-height: 1.6;
-    font-size: 18px;
-    margin-bottom: 100px;
+    color: #6e6c6c; /* 텍스트 색상 연한 회색 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    margin-top: 30px; /* 위쪽 여백 설정 */
+    font-weight: 300; /* 얇은 글자 두께 */
+    line-height: 1.6; /* 줄 간격 설정 */
+    font-size: 18px; /* 글자 크기 */
+    margin-bottom: 100px; /* 아래쪽 여백 설정 */
 }
 
+/* 카드 컨테이너 스타일 */
 .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex; /* 플렉스박스 적용 */
+    flex-direction: column; /* 요소를 세로로 배열 */
+    align-items: center; /* 가운데 정렬 */
 }
 
+/* 카드 스타일 */
 .card {
-    flex: 1;
-    padding: 20px;
-    margin: 10px;
-    text-align: center;
+    flex: 1; /* 동일한 크기로 분배 */
+    padding: 20px; /* 내부 여백 설정 */
+    margin: 10px; /* 외부 여백 설정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
 }
 
+/* 카드의 제목 스타일 */
 .card h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: #333;
+    font-size: 1.5em; /* 글자 크기를 1.5em으로 설정 */
+    margin-bottom: 10px; /* 아래쪽 여백 설정 */
+    color: #333; /* 텍스트 색상을 어두운 회색으로 설정 */
 }
 
+/* 버튼 기본 스타일 */
 button {
-    padding: 10px 20px;
-    background-color: #ea7824;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: 'ChosunGu', Arial, sans-serif;
+    padding: 10px 20px; /* 버튼 내부 여백 설정 */
+    background-color: #ea7824; /* 버튼 배경색 주황색으로 설정 */
+    border: none; /* 버튼 테두리 제거 */
+    border-radius: 4px; /* 버튼 모서리를 둥글게 설정 */
+    color: white; /* 텍스트 색상 흰색으로 설정 */
+    font-size: 1em; /* 글자 크기 설정 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    transition: background-color 0.3s ease; /* 배경색 전환 효과 추가 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
 }
 
-
-
+/* 버튼 호버 스타일 */
 button:hover {
-    background-color: #ea7824;
+    background-color: #ea7824; /* 호버 시 배경색 유지 */
 }
 
+/* 리스트 스타일 */
 ul {
-    list-style-type: disc;
-    padding-left: 20px;
-    color: #555;
+    list-style-type: disc; /* 리스트의 항목 앞에 디스크 모양 추가 */
+    padding-left: 20px; /* 리스트 항목 내부 여백 설정 */
+    color: #555; /* 텍스트 색상을 회색으로 설정 */
 }
 
+/* 리스트 항목 스타일 */
 li {
-    margin: 8px 0;
-    color: #555;
-    font-family: 'ChosunGu', Arial, sans-serif;
+    margin: 8px 0; /* 위아래 간격 설정 */
+    color: #555; /* 텍스트 색상을 회색으로 설정 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
 }
 
+/* 플렉스 레이아웃 스타일 */
 .flex-layout {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
+    display: flex; /* 플렉스박스 적용 */
+    justify-content: space-around; /* 내부 요소들을 좌우로 균등 분배 */
+    width: 100%; /* 레이아웃 너비를 화면 전체로 설정 */
 }
 
+/* 플렉스 레이아웃 내 카드 스타일 */
 .flex-layout .card {
-    flex: 1;
-    margin: 0 10px;
+    flex: 1; /* 동일한 크기로 분배 */
+    margin: 0 10px; /* 좌우 여백 설정 */
 }
 
+/* 중간 크기 화면 (768px 이하)용 미디어 쿼리 */
 @media (max-width: 768px) {
     .flex-layout {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: column; /* 플렉스 요소를 세로로 정렬 */
+        align-items: center; /* 요소를 가운데 정렬 */
     }
 
     .flex-layout .card {
-        width: 90%;
-        margin: 10px 0;
+        width: 90%; /* 카드 너비를 90%로 설정 */
+        margin: 10px 0; /* 위아래 여백 설정 */
     }
 
     section {
-        padding: 15px;
-        margin: 15px 0;
+        padding: 15px; /* 내부 여백 축소 */
+        margin: 15px 0; /* 섹션 간 간격 축소 */
     }
 
     h1 {
-        font-size: 1.8em;
+        font-size: 1.8em; /* 제목 크기 축소 */
     }
 
     h2 {
-        font-size: 1.4em;
+        font-size: 1.4em; /* 작은 제목 크기 축소 */
     }
 
     button {
-        padding: 8px 16px;
-        font-size: 0.9em;
+        padding: 8px 16px; /* 버튼 내부 여백 축소 */
+        font-size: 0.9em; /* 버튼 글자 크기 축소 */
     }
 }
 
+/* 작은 화면 (480px 이하)용 미디어 쿼리 */
 @media (max-width: 480px) {
     h1 {
-        font-size: 1.5em;
+        font-size: 1.5em; /* 제목 크기 추가 축소 */
     }
 
     h2 {
-        font-size: 1.2em;
+        font-size: 1.2em; /* 작은 제목 크기 추가 축소 */
     }
 
     p {
-        font-size: 0.9em;
+        font-size: 0.9em; /* 본문 글자 크기 축소 */
     }
 
     button {
-        padding: 6px 12px;
-        font-size: 0.8em;
+        padding: 6px 12px; /* 버튼 내부 여백 축소 */
+        font-size: 0.8em; /* 버튼 글자 크기 축소 */
     }
 
     section {
-        padding: 10px;
-        margin: 10px 0;
+        padding: 10px; /* 내부 여백 추가 축소 */
+        margin: 10px 0; /* 섹션 간 간격 추가 축소 */
     }
 }
 
-
+/* 스크롤 시 고정되는 스타일 (Sticky Wrapper) */
 .sticky-wrapper {
-    position: sticky; /* 스크롤 시 고정 */
+    position: sticky; /* 스크롤 시 고정 위치 */
     top: 0; /* 화면 상단에 고정 */
-    z-index: 1000; /* 다른 요소 위에 표시되도록 높은 z-index 설정 */
-    background-color: #ffffff; /* 배경색 추가 */
-    padding: 0; /* 패딩 제거 */
-    margin: 0; /* 마진 제거 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    background-color: #ffffff; /* 배경색 흰색 */
+    padding: 0; /* 내부 여백 제거 */
+    margin: 0; /* 외부 여백 제거 */
 }
 
+/* 버튼 컨테이너 스타일 */
 .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 100px; /* 버튼 사이 간격 */
-    padding: 0; /* 패딩 제거 */
-    margin-top: -35px;
+    display: flex; /* 버튼들을 가로로 정렬 */
+    justify-content: center; /* 버튼들을 중앙에 정렬 */
+    gap: 100px; /* 버튼들 사이 간격을 100px로 설정 */
+    padding: 0; /* 내부 여백 제거 */
+    margin-top: -35px; /* 컨테이너의 상단 마진을 -35px로 설정 */
 }
 
+/* 버튼 스타일 */
 .button-container button {
-    background: none; /* 버튼 배경 제거 */
+    background: none; /* 버튼의 배경 제거 */
     border: none; /* 버튼 테두리 제거 */
-    color: #938e8e; /* 버튼 텍스트 색상 */
-    font-size: 15px;
-    cursor: pointer;
-    font-family:'ChosunGu', Arial, sans-serif;
-    font-weight: 600;
-    position: relative; /* ::after 위치를 위해 상대 위치 설정 */
-    transition: color 0.3s ease;
+    color: #938e8e; /* 텍스트 색상을 연한 회색으로 설정 */
+    font-size: 15px; /* 텍스트 크기 설정 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    font-weight: 600; /* 폰트 두께를 굵게 설정 */
+    position: relative; /* 가상 요소 위치 조정을 위해 상대적 위치 설정 */
+    transition: color 0.3s ease; /* 텍스트 색상이 부드럽게 전환되도록 설정 */
 }
 
+/* 버튼 호버 효과 */
 .button-container button:hover {
-    color: #000; /* 호버 시 텍스트 색상 변경 */
+    color: #000; /* 호버 시 텍스트 색상을 검정색으로 변경 */
 }
 
-.small-line {
-    width: 100%; /* 화면 전체 너비 */
-    height: 2px; /* 선의 두께 */
-    background-color: rgba(154, 149, 149, 0.3); /* 연한 회색 */
-    margin-top: 4px;
-    padding: 0; /* 패딩 제거 */
-}
-
-
+/* 버튼 밑줄 스타일 (가상 요소) */
 .button-container button::after {
-    content: ''; /* 가상 요소 생성 */
-    display: block;
-    width: 100%;
-    height: 2px; /* 밑줄 두께 설정 */
-    background-color: #ea7824; /* 밑줄 색상 */
-    position: absolute;
-    bottom: -6px; /* 글자와 밑줄 사이 간격 조정 */
-    left: 0;
-    transform: scaleX(0); /* 처음에는 밑줄이 보이지 않도록 설정 */
-    transition: transform 0.3s ease; /* 애니메이션 효과 */
+    content: ''; /* 빈 가상 요소 생성 */
+    display: block; /* 요소를 블록으로 설정 */
+    width: 100%; /* 밑줄 너비를 버튼 너비와 동일하게 설정 */
+    height: 2px; /* 밑줄 높이를 2px로 설정 */
+    background-color: #ea7824; /* 밑줄 색상을 주황색으로 설정 */
+    position: absolute; /* 위치를 부모 기준으로 절대 위치 설정 */
+    bottom: -6px; /* 텍스트 아래 6px에 위치 */
+    left: 0; /* 왼쪽 정렬 */
+    transform: scaleX(0); /* 초기 상태에서 밑줄 보이지 않게 설정 */
+    transition: transform 0.3s ease; /* 호버 시 밑줄이 부드럽게 나타나도록 설정 */
 }
 
-.button-container button:hover {
-    color: #ea7824; /* 버튼에 호버 효과로 텍스트 색상 변경 */
-}
-
+/* 버튼 호버 시 밑줄 애니메이션 */
 .button-container button:hover::after {
-    transform: scaleX(1); /* 호버 시 밑줄이 나타나도록 설정 */
+    transform: scaleX(1); /* 밑줄이 완전히 나타나도록 확대 */
 }
 
+/* 버튼 아래 작은 선 스타일 */
+.small-line {
+    width: 100%; /* 선의 너비를 화면 전체로 설정 */
+    height: 2px; /* 선의 두께를 2px로 설정 */
+    background-color: rgba(154, 149, 149, 0.3); /* 연한 회색 투명도 적용 */
+    margin-top: 4px; /* 위쪽 여백 4px 설정 */
+    padding: 0; /* 내부 여백 제거 */
+}
 
-
-
+/* 텍스트 컨테이너 스타일 */
 .text-container {
-    display: flex;
-    flex-direction: column; /* 텍스트를 세로로 배열 */
-    align-items: center; /* 텍스트를 가운데 정렬 */
-    margin-top: -100px;
+    display: flex; /* 플렉스박스 적용 */
+    flex-direction: column; /* 텍스트를 세로로 정렬 */
+    align-items: center; /* 텍스트를 수평으로 중앙 정렬 */
+    margin-top: -100px; /* 컨테이너 상단 여백을 -100px로 설정 */
 }
 
+/* 이미지 컨테이너 스타일 */
 .image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%; /* 부모 컨테이너가 전체 너비를 차지하도록 설정 */
-    margin-top: -60px;
+    display: flex; /* 플렉스박스 적용 */
+    justify-content: center; /* 이미지를 수평으로 중앙 정렬 */
+    align-items: center; /* 이미지를 수직으로 중앙 정렬 */
+    width: 100%; /* 컨테이너 너비를 화면 전체로 설정 */
+    margin-top: -60px; /* 컨테이너 상단 여백을 -60px로 설정 */
 }
 
+/* 배너 이미지 스타일 */
 .banner1-image, .banner2-image {
-    max-width: 100%; /* 이미지 크기를 조정하여 적절하게 배치 */
-    height: auto; /* 이미지 비율 유지 */
+    max-width: 100%; /* 이미지의 너비를 컨테이너 너비에 맞게 조정 */
+    height: auto; /* 이미지 비율을 유지하며 높이를 자동 조정 */
 }
 
-@font-face {
-    font-family: 'IM_Hyemin-Bold';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2106@1.1/IM_Hyemin-Bold.woff2') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
+/* 강조 텍스트 스타일 (두꺼운 폰트 사용) */
 .highlight2-text {
-    flex-direction: column; /* 자식 요소들이 수직으로 배치되도록 설정 */
-    text-align: center;
-    margin-top: 250px;
-    font-family: 'IM_Hyemin-Bold', Arial, sans-serif;
-    font-size: 50px;
-    font-weight: 500;
-    color: #000000;
+    flex-direction: column; /* 자식 요소를 수직으로 배열 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    margin-top: 250px; /* 상단 여백 250px 설정 */
+    font-family: 'IM_Hyemin-Bold', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 50px; /* 텍스트 크기를 50px로 설정 */
+    font-weight: 500; /* 폰트 두께를 중간 정도로 설정 */
+    color: #000000; /* 텍스트 색상을 검정색으로 설정 */
 }
 
+/* 강조 텍스트 내 각 줄 스타일 */
 .highlight2-text span {
     display: block; /* 각 줄을 세로로 배열 */
-    margin-bottom: 20px; /* 줄 간격 조정 (필요 시 조정) */
+    margin-bottom: 20px; /* 줄 간격을 20px로 설정 */
 }
 
+/* 또 다른 강조 텍스트 스타일 (가벼운 폰트 사용) */
 .highlight3-text {
-    flex-direction: column; /* 자식 요소들이 수직으로 배치되도록 설정 */
-    text-align: center;
-    margin-top: 130px;
-    font-family: 'ChosunGu', Arial, sans-serif;
-    font-size: 26px;
-    font-weight: 100;
-    color: #000000;
+    flex-direction: column; /* 자식 요소를 수직으로 배열 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    margin-top: 130px; /* 상단 여백 130px 설정 */
+    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 26px; /* 텍스트 크기를 26px로 설정 */
+    font-weight: 100; /* 폰트 두께를 얇게 설정 */
+    color: #000000; /* 텍스트 색상을 검정색으로 설정 */
 }
 

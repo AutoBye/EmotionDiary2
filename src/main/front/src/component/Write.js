@@ -32,15 +32,16 @@ function Write() {
     // 세션 체크 함수
     const checkSession = async () => {
         try {
-            const response = await axios.get('http://192.168.123.161:8080/check-session', { withCredentials: true });
+            const response = await axios.get('/check-session', { withCredentials: true });
             if (!response.data || !response.data.username) {
                 throw new Error('로그인이 필요합니다.');
             }
         } catch (error) {
-            setModalMessage('로그인이 필요합니다.');
+            //setModalMessage('로그인이 필요합니다.');
+            navigate('/login'); // 로그인 페이지로 이동
             setTimeout(() => {
-                navigate('/login'); // 로그인 페이지로 이동
-            }, 1000); // 2초 후에 페이지 이동
+                //navigate('/login'); // 로그인 페이지로 이동
+            }, 0); // 2초 후에 페이지 이동
         }
     };
 
@@ -48,7 +49,7 @@ function Write() {
     useEffect(() => {
         checkSession();
 
-        axios.get('http://192.168.123.161:8080/api/stickers', {withCredentials: true})
+        axios.get('/api/stickers', {withCredentials: true})
             .then(response => {
                 setStickers(response.data || []);
                 //console.log('스티커 데이터:', response.data); // 스티커 데이터 확인
@@ -57,7 +58,7 @@ function Write() {
                 const errorMessage = error.response?.data;
                 setModalMessage(errorMessage); // 모달 메시지 설정
             });
-        axios.get('http://192.168.123.161:8080/api/themes', {withCredentials: true})
+        axios.get('/api/themes', {withCredentials: true})
             .then(response => {
                 setThemes(response.data || []);
                 // console.log('테마 데이터:', response.data); // 테마 데이터 확인
@@ -199,7 +200,7 @@ function Write() {
             });
         });
 
-        axios.post('http://192.168.123.161:8080/diaries/write', {
+        axios.post('/diaries/write', {
             title,
             content,
             visibility: isPublic,
@@ -327,7 +328,7 @@ function Write() {
                 {droppedStickers.map((sticker, index) => (
                     <img
                         key={index}
-                        src={`http://192.168.123.161:8080${sticker.imageUrl}`}
+                        src={`${sticker.imageUrl}`}
                         alt={sticker.stickerName}
                         className="dropped-sticker"
                         style={{
@@ -354,7 +355,7 @@ function Write() {
                     {stickers.map((sticker) => (
                         <img
                             key={sticker.stickerId}
-                            src={`http://192.168.123.161:8080${sticker.imageUrl}`}
+                            src={`${sticker.imageUrl}`}
                             alt={sticker.stickerName}
                             className="sticker-item"
                             draggable

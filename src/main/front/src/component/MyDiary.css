@@ -1,0 +1,155 @@
+@font-face {
+    font-family: 'Uiyeun'; /* 폰트 이름 지정 */
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Uiyeun.woff') format('woff'); /* 외부 웹폰트 링크 */
+    font-weight: normal; /* 일반 글꼴 두께 */
+    font-style: normal; /* 일반 글꼴 스타일 */
+}
+
+/* .my-diary-container: 전체 컨테이너 스타일 */
+.my-diary-container {
+    padding: 20px; /* 컨테이너 내 여백 */
+    width: 90%; /* 화면 너비의 90%를 사용 */
+    max-width: 100%; /* 최대 너비 100%로 설정 */
+    display: flex; /* 플렉스 박스로 배치 */
+    flex-direction: column; /* 요소들을 수직으로 정렬 */
+}
+
+/* .sort-buttons: 정렬 버튼들 스타일 */
+.sort-buttons {
+    margin-bottom: 20px; /* 버튼과 아래 요소 간의 간격 */
+    text-align: left; /* 버튼을 왼쪽 정렬 */
+    display: flex; /* 버튼을 가로로 배치 */
+    gap: 10px; /* 버튼 간의 간격 */
+    flex-wrap: wrap; /* 버튼이 넘칠 경우 자동으로 줄 바꿈 */
+    margin-left: 900px; /* 왼쪽에서 살짝 오른쪽으로 이동 */
+}
+
+.sort-buttons button {
+    padding: 5px 10px; /* 버튼 내 여백 */
+    border: 2px solid rgba(133, 132, 132, 0.93); /* 테두리 색상 */
+    background-color: white; /* 배경색 흰색 */
+    color: black; /* 글자 색상 검정 */
+    border-radius: 15px; /* 둥근 모서리 */
+    cursor: pointer; /* 마우스 커서가 버튼 위에 있을 때 손 모양 */
+    transition: background-color 0.3s, color 0.3s; /* 배경색과 글자 색상 변화에 애니메이션 */
+    font-family: 'Uiyeun', Arial, sans-serif; /* 기본 폰트 */
+    font-size: 25px; /* 글자 크기 */
+}
+
+/* 활성화된 정렬 버튼 스타일 */
+.sort-buttons button.active {
+    background-color: #ea7824; /* 활성화된 버튼의 배경색 */
+    color: white; /* 글자 색상을 흰색으로 변경 */
+}
+
+/* .content-container: 다이어리 목록과 그래프를 나란히 배치 */
+.content-container {
+    display: flex; /* 가로로 배치 */
+    width: 100%; /* 화면 너비 100% 사용 */
+    margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* .diary-list: 다이어리 목록 섹션 스타일 */
+.diary-list {
+    flex: 1; /* 화면 너비의 나머지 공간을 차지 */
+    padding-right: 20px; /* 오른쪽 여백 추가 */
+    box-sizing: border-box; /* padding을 width에 포함 */
+}
+
+/* .graph-container: 그래프 섹션 스타일 */
+.graph-container {
+    width: 28%; /* 그래프의 너비를 28%로 설정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* .graph-container p: 그래프 분석 설명 텍스트 스타일 */
+.graph-container p {
+    font-family: 'Uiyeun', Arial, sans-serif; /* 폰트 지정 */
+    font-size: 35px; /* 글자 크기 */
+    margin-bottom: 20px; /* 하단 여백 */
+}
+
+/* .diary-table: 다이어리 목록 테이블 스타일 */
+.diary-table {
+    width: 100%; /* 테이블 너비를 100%로 설정 */
+    border-collapse: collapse; /* 테이블 셀 간 경계선 겹침 없앰 */
+    margin-bottom: 20px; /* 하단 여백 */
+}
+
+/* 테이블 헤더 셀 스타일 */
+.diary-table th {
+    background-color: rgba(250, 134, 49, 0.99); /* 배경색 지정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 10px; /* 셀 내 여백 */
+    font-family: 'Uiyeun', Arial, sans-serif; /* 폰트 지정 */
+    font-size: 26px; /* 글자 크기 */
+    color: #ffffff; /* 글자 색상 흰색 */
+}
+
+/* 테이블 데이터 셀 스타일 */
+.diary-table td {
+    padding: 10px; /* 셀 내 여백 */
+    border-bottom: 1px solid #ddd; /* 셀 하단에 경계선 */
+    font-family: 'Uiyeun', Arial, sans-serif; /* 폰트 지정 */
+    font-size: 28px; /* 글자 크기 */
+    color: #000000; /* 글자 색상 검정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* .diary-row: 다이어리 목록의 각 행 스타일 */
+.diary-row {
+    cursor: pointer; /* 클릭할 수 있음을 나타내는 손 모양 커서 */
+    transition: background-color 0.3s; /* 배경색 변화에 애니메이션 */
+}
+
+/* .diary-row:hover: 다이어리 목록의 각 행에 마우스를 올렸을 때 스타일 */
+.diary-row:hover {
+    background-color: #f9f9f9; /* 배경색을 살짝 밝게 변경 */
+}
+
+/* .like-count: 공감 수 셀 스타일 */
+.like-count {
+    text-align: center; /* 공감 수를 중앙 정렬 */
+    font-family: 'Uiyeun', Arial, sans-serif; /* 폰트 지정 */
+    font-size: 28px; /* 글자 크기 */
+    color: #ea7824; /* 강조된 색상 */
+    font-weight: bold; /* 굵은 글꼴 */
+    padding: 10px; /* 내부 여백 */
+}
+
+/* .empty-message: 다이어리가 없을 때 표시될 메시지 스타일 */
+.empty-message {
+    font-family: 'Uiyeun', Arial, sans-serif; /* 폰트 지정 */
+    font-size: 30px; /* 글자 크기 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 20px; /* 여백 설정 */
+}
+
+/* .pagination: 페이지네이션 버튼 스타일 */
+.pagination {
+    text-align: center; /* 페이지네이션 버튼 중앙 정렬 */
+    margin: 20px 0; /* 페이지네이션 상하 간격 설정 */
+}
+
+/* .pagination button: 각 페이지네이션 버튼 스타일 */
+.pagination button {
+    padding: 0px 10px; /* 버튼 내 여백 */
+    margin: 0 5px; /* 버튼 간 간격 */
+    border: 1px solid #ea7824; /* 테두리 색상 */
+    background-color: white; /* 배경색 흰색 */
+    color: black; /* 글자 색상 검정 */
+    cursor: pointer; /* 마우스 오버 시 손 모양 커서 */
+    font-family: 'Uiyeun', Arial, sans-serif; /* 폰트 지정 */
+    font-size: 28px; /* 글자 크기 */
+}
+
+/* 활성화된 페이지네이션 버튼 스타일 */
+.pagination button.active-page {
+    background-color: #ea7824; /* 활성화된 버튼 배경색 */
+    color: white; /* 활성화된 버튼 글자 색상 */
+}
+
+/* 작성일 열 스타일 */
+.diary-table td:nth-child(3) {
+    text-align: center; /* 작성일 열을 중앙 정렬 */
+}
