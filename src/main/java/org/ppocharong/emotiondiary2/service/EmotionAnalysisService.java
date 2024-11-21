@@ -56,11 +56,26 @@ public class EmotionAnalysisService {
     /** 피드백 생성 메소드 */
     private String generateFeedback(int averageScore) {
         if (averageScore > 50) {
-            return String.format("선택하신 감정과 AI 분석이 높은 일치도를 보입니다. 감정 상태를 잘 표현하셨네요! 점수 : %d", averageScore);
+            return String.format(
+                    "선택하신 감정과 AI 분석이 높은 일치도를 보입니다.<br>" +
+                            "감정 상태를 잘 표현하셨네요!<br>" +
+                            "점수 : %d",
+                    averageScore
+            );
         } else if (averageScore > 30) {
-            return String.format("선택하신 감정과 AI 분석에 일부 일치가 있습니다. 미묘한 감정의 차이를 이해해 보세요. 점수 : %d", averageScore);
+            return String.format(
+                    "선택하신 감정과 AI 분석에 일부 일치가 있습니다.<br>" +
+                            "미묘한 감정의 차이를 이해해 보세요.<br>" +
+                            "점수 : %d",
+                    averageScore
+            );
         } else {
-            return String.format("선택하신 감정과 AI 분석이 다를 수 있습니다. 상황에 따라 감정이 다르게 느껴질 수 있습니다. 점수 : %d", averageScore);
+            return String.format(
+                    "선택하신 감정과 AI 분석이 다를 수 있습니다.<br>" +
+                            "상황에 따라 감정이 다르게 느껴질 수 있습니다.<br>" +
+                            "점수 : %d",
+                    averageScore
+            );
         }
     }
 

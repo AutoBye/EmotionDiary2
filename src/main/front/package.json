@@ -1,5 +1,5 @@
 {
-  "proxy": "https://199d-203-230-86-251.ngrok-free.app",
+  "proxy": "http://192.168.123.161:8080",
   "name": "front",
   "version": "0.1.0",
   "private": true,

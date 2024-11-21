@@ -149,7 +149,7 @@ function DiaryDetail({ username }) {
                 callbacks: {
                     label: function (context) {
                         const emotionLabel = context.label;
-                        const subcategories = emotionData[emotionLabel].subcategories;
+                        const subcategories = [...new Set(emotionData[emotionLabel].subcategories)]; // 중복 제거
                         return `${emotionLabel}: ${context.raw.toFixed(1)}% - ${subcategories.join(", ")}`;
                     }
                 }
@@ -160,6 +160,7 @@ function DiaryDetail({ username }) {
             }
         }
     };
+
 
 
 
@@ -201,7 +202,7 @@ function DiaryDetail({ username }) {
                 <div className="write-content"
                      style={{}}>
                     <p className="diary-content">{diary.content}</p>
-                    <p>공개 여부: {diary.isPublic ? '공개' : '비공개'}</p>
+                    <p>공개 여부: {diary.visibility ? '공개' : '비공개'}</p>
                     <p>감정: {diary.emotions && diary.emotions.map(emotion => `${emotion.mainEmotion} (${emotion.subEmotion})`).join(', ')}</p>
                     <p>작성 날짜: {new Date(diary.createdAt).toLocaleDateString()}</p>
                     <p>작성자: {diary.author || '익명'}</p>
@@ -260,11 +261,19 @@ function DiaryDetail({ username }) {
             </div>
             {/* 감정 분석 그래프 */}
             {diary.author === username && (
-                <div style={{flex: 1, padding: '20px', maxWidth: '500px', height: '300px'}}>
+                <div style={{
+                    flexDirection: 'column',  // 세로 방향으로 정렬
+                    alignItems: 'center',     // 가로 중앙 정렬
+                    justifyContent: 'center', // 세로 중앙 정렬
+                    padding: '20px',
+                    maxWidth: '700px',
+                    height: '300px',
+                    margin: '0 auto',         // 부모 요소 기준 중앙 배치
+                }}>
                     <Doughnut data={chartData} options={chartOptions}/>
                     <div className="feedback-section" style={{marginTop: '70px', marginRight: '200px', textAlign: 'center'}}>
                         <h3>감정 분석 피드백</h3>
-                        <p>{feedback}</p>
+                        <p style = {{}} dangerouslySetInnerHTML={{__html: feedback}}></p>
                     </div>
                 </div>
             )}

@@ -95,6 +95,13 @@
     color: #000000; /* 글자 색상 검정 */
     text-align: center; /* 텍스트 중앙 정렬 */
 }
+.diary-table td:nth-child(4) {
+    font-family: 'Uiyeun', Arial, sans-serif; /* 글꼴 설정 */
+    font-size: 28px; /* 글자 크기 */
+    color: #e87723; /* 주황색 텍스트 색상 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    font-weight: bold; /* 텍스트 굵게 표시 */
+}
 
 /* .diary-row: 다이어리 목록의 각 행 스타일 */
 .diary-row {
@@ -116,6 +123,8 @@
     font-weight: bold; /* 굵은 글꼴 */
     padding: 10px; /* 내부 여백 */
 }
+
+
 
 /* .empty-message: 다이어리가 없을 때 표시될 메시지 스타일 */
 .empty-message {
@@ -152,4 +161,8 @@
 /* 작성일 열 스타일 */
 .diary-table td:nth-child(3) {
     text-align: center; /* 작성일 열을 중앙 정렬 */
+}
+
+.delete-button:hover {
+    transform: scale(1.1); /* 마우스 오버 시 확대 */
 }

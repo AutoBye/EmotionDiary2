@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // 모든 경로에 대해 CORS 적용
-                .allowedOrigins("https://4ea3-203-230-86-251.ngrok-free.app")  // 허용할 프론트엔드 도메인
+                .allowedOrigins("http://192.168.123.161:3000")  // 허용할 프론트엔드 도메인
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // 허용할 HTTP 메서드
                 .allowCredentials(true)  // 자격 증명 허용
                 .allowedHeaders("*");  // 모든 헤더 허용

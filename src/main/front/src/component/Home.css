@@ -6,6 +6,88 @@
     font-style: normal; /* 기본 글자 스타일 */
 }
 
+@font-face {
+    font-family: 'KyoboHand';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/KyoboHand.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 페이드-인 애니메이션 정의 */
+@keyframes fade-in {
+    from {
+        opacity: 0; /* 초기 투명도 설정 */
+        transform: translateY(20px); /* 아래에서 위로 이동 시작 */
+    }
+    to {
+        opacity: 1; /* 최종 투명도 설정 */
+        transform: translateY(0); /* 원래 위치로 이동 */
+    }
+}
+
+/* 페이드-인 애니메이션 적용 */
+.fade-in {
+    opacity: 0; /* 초기 투명도 설정 */
+    animation: fade-in 1s ease forwards; /* 애니메이션 1초 동안 진행 */
+}
+
+.fade-in.section-style2 {
+    min-height: 915px;  /* 섹션 최소 높이 */
+    height: auto;  /* 내용에 맞게 자동 높이 조정 */
+    background: linear-gradient(to bottom, rgba(246, 195, 176, 0.67), rgba(241, 137, 61, 0.85)); /* 그라데이션 배경 */
+}
+
+
+
+.fade-in.section-style3 {
+    align-content: center;
+    min-height: 910px;  /* 섹션 최소 높이 */
+    height: auto;  /* 내용에 맞게 자동 높이 조정 */
+    background-color: #fff;  /* 배경색을 흰색으로 설정 */
+    border: 2px solid #d1d1d1;  /* 테두리 */
+    padding: 20px;  /* 내부 여백 */
+    font-family: 'Courier New', Courier, monospace;  /* 타자기 폰트 스타일 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
+    position: relative;  /* 내부 콘텐츠의 상대적 위치 */
+    overflow: auto;  /* 내용이 넘칠 경우 스크롤 가능 */
+    background-image: linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);  /* 줄무늬 배경 */
+    background-size: 100% 20px;  /* 줄의 간격을 20px로 설정 */
+}
+
+/* 메모장의 텍스트 스타일 */
+.fade-in.section-style3 p {
+    line-height: 1.9;  /* 텍스트 줄 간격 */
+    color: #333;  /* 텍스트 색상 */
+}
+
+.fade-in.section-style4 {
+    align-content: center;
+    min-height: 1000px; /* 섹션 최소 높이 */
+}
+
+.fade-in.section-style4 {
+    background-size: cover; /* 섹션 크기에 맞게 이미지 크기 조정 */
+    background-position: center; /* 배경 이미지의 중앙 정렬 */
+    background-repeat: no-repeat; /* 이미지 반복 방지 */
+    min-height: 1000px; /* 섹션 최소 높이 */
+    display: flex; /* 내부 콘텐츠 정렬을 위한 flexbox 사용 */
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    justify-content: center; /* 수직 중앙 정렬 */
+    align-items: center; /* 수평 중앙 정렬 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    color: white; /* 텍스트 색상을 흰색으로 설정 */
+    padding: 20px; /* 텍스트와 화면 가장자리 간격 */
+}
+
+
+
+
+
+/* 페이드-인 애니메이션 후 상태 */
+.fade-in.visible {
+    opacity: 1; /* 투명도 완전하게 보이도록 설정 */
+}
+
 /* 웹 페이지의 기본 스타일을 설정 */
 body {
     margin: 0; /* 페이지 외부 여백 제거 */
@@ -15,7 +97,6 @@ body {
 
 /* 메인 컨테이너의 스타일 설정 */
 main {
-    padding: 20px; /* 내부 여백 설정 */
     flex-direction: column; /* 내부 요소들을 수직으로 배열 */
     align-items: center; /* 요소들을 가운데 정렬 */
     color: #333; /* 텍스트 색상 설정 */
@@ -23,8 +104,6 @@ main {
 
 /* 섹션 스타일 */
 section {
-    width: 100%; /* 섹션의 너비를 화면 전체로 설정 */
-    margin: 500px 0; /* 위아래 여백 설정 */
     padding: 20px; /* 내부 여백 설정 */
     text-align: center; /* 텍스트 중앙 정렬 */
 }
@@ -37,6 +116,7 @@ section {
 
 /* 첫 번째 섹션의 추가 스타일 */
 .section-one {
+    min-height: 735px;  /* 섹션 최소 높이 */
     margin-top: 150px; /* 상단 여백 설정 */
     padding-top: 20px; /* 추가 상단 여백 */
 }
@@ -71,47 +151,42 @@ h1 {
     font-size: 23px; /* 글자 크기 설정 */
     margin-bottom: 100px; /* 아래쪽 간격 설정 */
 }
-
-/* 페이드-인 애니메이션 정의 */
-@keyframes fade-in {
-    from {
-        opacity: 0; /* 초기 투명도 설정 */
-        transform: translateY(20px); /* 아래에서 위로 이동 시작 */
-    }
-    to {
-        opacity: 1; /* 최종 투명도 설정 */
-        transform: translateY(0); /* 원래 위치로 이동 */
-    }
+/* 강조 텍스트 스타일 (두꺼운 폰트 사용) */
+.highlight2-text {
+    flex-direction: column; /* 자식 요소를 수직으로 배열 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    margin-top: 250px; /* 상단 여백 250px 설정 */
+    font-family: 'KyoboHand', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 60px; /* 텍스트 크기를 50px로 설정 */
+    font-weight: 500; /* 폰트 두께를 중간 정도로 설정 */
+    color: #000000; /* 텍스트 색상을 검정색으로 설정 */
 }
 
-/* 페이드-인 애니메이션 적용 */
-.fade-in {
-    opacity: 0; /* 초기 투명도 설정 */
-    animation: fade-in 1s ease forwards; /* 애니메이션 1초 동안 진행 */
+/* 2 */
+.highlight2-text span {
+    display: block; /* 각 줄을 세로로 배열 */
+    margin-bottom: 20px; /* 줄 간격을 20px로 설정 */
 }
 
-/* 페이드-인 애니메이션 후 상태 */
-.fade-in.visible {
-    opacity: 1; /* 투명도 완전하게 보이도록 설정 */
+/* 3 */
+.highlight3-text {
+    flex-direction: column; /* 자식 요소를 수직으로 배열 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    margin-top: 90px; /* 상단 여백 130px 설정 */
+    font-family: 'KyoboHand', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 20px; /* 텍스트 크기를 26px로 설정 */
+    font-weight: 100; /* 폰트 두께를 얇게 설정 */
+    color: #000000; /* 텍스트 색상을 검정색으로 설정 */
 }
-
 /* 작은 제목 스타일 */
 h2 {
     color: #000000; /* 텍스트 색상 검정 */
     font-weight: 900; /* 글자 두께를 매우 두껍게 설정 */
-    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    font-family: 'KyoboHand', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 60px;
 }
 
-/* 설명 텍스트 스타일 */
-.explain-text {
-    color: #6e6c6c; /* 텍스트 색상 연한 회색 */
-    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
-    margin-top: 30px; /* 위쪽 여백 설정 */
-    font-weight: 300; /* 얇은 글자 두께 */
-    line-height: 1.6; /* 줄 간격 설정 */
-    font-size: 18px; /* 글자 크기 */
-    margin-bottom: 100px; /* 아래쪽 여백 설정 */
-}
+
 
 /* 카드 컨테이너 스타일 */
 .card-container {
@@ -122,18 +197,59 @@ h2 {
 
 /* 카드 스타일 */
 .card {
-    flex: 1; /* 동일한 크기로 분배 */
-    padding: 20px; /* 내부 여백 설정 */
-    margin: 10px; /* 외부 여백 설정 */
+    margin-top: 300px;
+    padding: 20px;  /* 카드 내부 여백 */
+    max-width: 300px;  /* 카드의 최대 너비 */
+    width: 100%;  /* 카드의 너비를 100%로 설정 */
     text-align: center; /* 텍스트 중앙 정렬 */
 }
 
+.card-images {
+    display: flex; /* Flexbox를 사용해 이미지 나란히 배치 */
+    justify-content: center; /* 이미지 가운데 정렬 */
+    gap: 100px; /* 이미지 간격 설정 */
+    margin-bottom: 30px; /* 이미지와 텍스트 사이 여백 */
+}
+
+.card-image {
+    margin-top: -150px;
+    width: 550px; /* 각 이미지의 고정 너비 */
+    height: auto; /* 비율 유지 */
+    border-radius: 8px; /* 이미지 모서리를 둥글게 */
+}
+
+.slick-slide {
+    display: inline-block; /* 슬라이드 아이템을 인라인 블록으로 설정하여 가로로 배치 */
+    width: auto; /* 자동 크기 조정 */
+}
+
+@font-face {
+    font-family: 'RixXladywatermelonR';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-4@1.0/RixXladywatermelonR.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 /* 카드의 제목 스타일 */
 .card h2 {
-    font-size: 1.5em; /* 글자 크기를 1.5em으로 설정 */
+    font-size: 30px; /* 글자 크기를 1.5em으로 설정 */
     margin-bottom: 10px; /* 아래쪽 여백 설정 */
-    color: #333; /* 텍스트 색상을 어두운 회색으로 설정 */
+    color: #000000; /* 텍스트 색상을 어두운 회색으로 설정 */
+    font-family: 'RixXladywatermelonR', Arial, sans-serif; /* 폰트 설정 */
 }
+
+/* 카드 설명 텍스트 스타일 */
+.explain-text {
+    color: #ffffff; /* 텍스트 색상 연한 회색 */
+    font-family: 'RixXladywatermelonR', Arial, sans-serif; /* 폰트 설정 */
+    margin-top: 30px; /* 위쪽 여백 설정 */
+    font-weight: 300; /* 얇은 글자 두께 */
+    line-height: 1.6; /* 줄 간격 설정 */
+    font-size: 22px; /* 글자 크기 */
+    margin-bottom: 100px; /* 아래쪽 여백 설정 */
+}
+
 
 /* 버튼 기본 스타일 */
 button {
@@ -157,14 +273,18 @@ button:hover {
 ul {
     list-style-type: disc; /* 리스트의 항목 앞에 디스크 모양 추가 */
     padding-left: 20px; /* 리스트 항목 내부 여백 설정 */
-    color: #555; /* 텍스트 색상을 회색으로 설정 */
+    color: #000000; /* 텍스트 색상을 회색으로 설정 */
+
 }
 
 /* 리스트 항목 스타일 */
 li {
     margin: 8px 0; /* 위아래 간격 설정 */
-    color: #555; /* 텍스트 색상을 회색으로 설정 */
-    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
+    color: #515050; /* 텍스트 색상을 회색으로 설정 */
+    font-family: 'KyoboHand', Arial, sans-serif; /* 폰트 설정 */
+    font-size: 30px;
+    list-style-type: none;
+    line-height: 2.5; /* 줄 간격을 넓혀줍니다. 필요에 따라 숫자를 조정하세요. */
 }
 
 /* 플렉스 레이아웃 스타일 */
@@ -180,61 +300,7 @@ li {
     margin: 0 10px; /* 좌우 여백 설정 */
 }
 
-/* 중간 크기 화면 (768px 이하)용 미디어 쿼리 */
-@media (max-width: 768px) {
-    .flex-layout {
-        flex-direction: column; /* 플렉스 요소를 세로로 정렬 */
-        align-items: center; /* 요소를 가운데 정렬 */
-    }
 
-    .flex-layout .card {
-        width: 90%; /* 카드 너비를 90%로 설정 */
-        margin: 10px 0; /* 위아래 여백 설정 */
-    }
-
-    section {
-        padding: 15px; /* 내부 여백 축소 */
-        margin: 15px 0; /* 섹션 간 간격 축소 */
-    }
-
-    h1 {
-        font-size: 1.8em; /* 제목 크기 축소 */
-    }
-
-    h2 {
-        font-size: 1.4em; /* 작은 제목 크기 축소 */
-    }
-
-    button {
-        padding: 8px 16px; /* 버튼 내부 여백 축소 */
-        font-size: 0.9em; /* 버튼 글자 크기 축소 */
-    }
-}
-
-/* 작은 화면 (480px 이하)용 미디어 쿼리 */
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.5em; /* 제목 크기 추가 축소 */
-    }
-
-    h2 {
-        font-size: 1.2em; /* 작은 제목 크기 추가 축소 */
-    }
-
-    p {
-        font-size: 0.9em; /* 본문 글자 크기 축소 */
-    }
-
-    button {
-        padding: 6px 12px; /* 버튼 내부 여백 축소 */
-        font-size: 0.8em; /* 버튼 글자 크기 축소 */
-    }
-
-    section {
-        padding: 10px; /* 내부 여백 추가 축소 */
-        margin: 10px 0; /* 섹션 간 간격 추가 축소 */
-    }
-}
 
 /* 스크롤 시 고정되는 스타일 (Sticky Wrapper) */
 .sticky-wrapper {
@@ -252,7 +318,7 @@ li {
     justify-content: center; /* 버튼들을 중앙에 정렬 */
     gap: 100px; /* 버튼들 사이 간격을 100px로 설정 */
     padding: 0; /* 내부 여백 제거 */
-    margin-top: -35px; /* 컨테이너의 상단 마진을 -35px로 설정 */
+    margin-top: -15px; /* 컨테이너의 상단 마진을 -35px로 설정 */
 }
 
 /* 버튼 스타일 */
@@ -324,31 +390,28 @@ li {
     height: auto; /* 이미지 비율을 유지하며 높이를 자동 조정 */
 }
 
-/* 강조 텍스트 스타일 (두꺼운 폰트 사용) */
-.highlight2-text {
-    flex-direction: column; /* 자식 요소를 수직으로 배열 */
-    text-align: center; /* 텍스트를 가운데 정렬 */
-    margin-top: 250px; /* 상단 여백 250px 설정 */
-    font-family: 'IM_Hyemin-Bold', Arial, sans-serif; /* 폰트 설정 */
-    font-size: 50px; /* 텍스트 크기를 50px로 설정 */
-    font-weight: 500; /* 폰트 두께를 중간 정도로 설정 */
-    color: #000000; /* 텍스트 색상을 검정색으로 설정 */
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ea7824;
+    color: white;
+    border: none;
+    width: 10px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    text-align: center;
 }
 
-/* 강조 텍스트 내 각 줄 스타일 */
-.highlight2-text span {
-    display: block; /* 각 줄을 세로로 배열 */
-    margin-bottom: 20px; /* 줄 간격을 20px로 설정 */
+
+.scroll-to-top:hover {
+    background-color: #ea6f14;
 }
 
-/* 또 다른 강조 텍스트 스타일 (가벼운 폰트 사용) */
-.highlight3-text {
-    flex-direction: column; /* 자식 요소를 수직으로 배열 */
-    text-align: center; /* 텍스트를 가운데 정렬 */
-    margin-top: 130px; /* 상단 여백 130px 설정 */
-    font-family: 'ChosunGu', Arial, sans-serif; /* 폰트 설정 */
-    font-size: 26px; /* 텍스트 크기를 26px로 설정 */
-    font-weight: 100; /* 폰트 두께를 얇게 설정 */
-    color: #000000; /* 텍스트 색상을 검정색으로 설정 */
-}
 
